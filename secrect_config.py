@@ -1,0 +1,6 @@
+PGHOST='ep-fancy-silence-aftar1ci-pooler.c-2.us-west-2.aws.neon.tech'
+PGDATABASE='neondb'
+PGUSER='neondb_owner'
+PGPASSWORD='npg_HpCrmo49gqAN'
+PGSSLMODE='require'
+PGCHANNELBINDING='require'
