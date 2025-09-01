@@ -74,3 +74,9 @@ section {
     height: 100vh; /* pantalla completa */
     padding: 50px;
 }
+
+.vertical-text {
+    display: inline-block;
+    writing-mode: vertical-rl;
+    text-orientation: left top; /* Mantiene letras en posición normal */
+}
