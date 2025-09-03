@@ -80,3 +80,22 @@ section {
     writing-mode: vertical-rl;
     text-orientation: left top; /* Mantiene letras en posición normal */
 }
+
+.chatbot-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: red; /* aquí pones el color que quieras */
+  color: white;
+  font-size: 22px;
+  text-decoration: none;
+  padding: 15px;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  transition: background 0.3s ease;
+  z-index: 1000;
+}
+
+.chatbot-btn:hover {
+  background: darkred;
+}

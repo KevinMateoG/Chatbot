@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot Uvirtual</title>
+  <link rel="stylesheet" href="chatbot.css">
+</head>
+<body>
+  <!-- Barra superior -->
+  <div class="chat-header">
+    <span>Atras</span>
+  </div>
+
+  <!-- Contenedor principal del chat -->
+  <div class="chat-container">
+    <div class="chat-box" id="chat-box">
+      <div class="bot-message">Bienvenido al asistente de Uvirtual, aquí resolveremos tus dudas de tu interés.</div>
+      <div class="bot-message">Por favor ingresa tu tipo de documento de identidad</div>
+    </div>
+
+    <!-- Input de usuario -->
+    <div class="input-container">
+      <input type="text" id="user-input" placeholder="Escribe tu mensaje...">
+      <button onclick="sendMessage()">✈</button>
+    </div>
+  </div>
+
+  <script>
+    function sendMessage() {
+      let input = document.getElementById("user-input");
+      let message = input.value.trim();
+      if (message === "") return;
+
+      let chatBox = document.getElementById("chat-box");
+
+      // mensaje del usuario
+      let userMsg = document.createElement("div");
+      userMsg.className = "user-message";
+      userMsg.innerText = message;
+      chatBox.appendChild(userMsg);
+
+      input.value = "";
+
+      // respuesta automática básica
+      setTimeout(() => {
+        let botMsg = document.createElement("div");
+        botMsg.className = "bot-message";
+        botMsg.innerText = "Respuesta automática del bot...";
+        chatBox.appendChild(botMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 800);
+    }
+  </script>
+</body>
+</html>
+

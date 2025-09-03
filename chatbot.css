@@ -1,0 +1,76 @@
+/* Barra superior */
+.chat-header {
+  background-color: #C2262B; /* Rojo oscuro */
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Contenedor del chat */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  background: #fff;
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+}
+
+/* Caja de mensajes */
+.chat-box {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mensajes del bot */
+.bot-message {
+  background: #932428; /* Rojo */
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 5px 0;
+  align-self: flex-start;
+  max-width: 70%;
+}
+
+/* Mensajes del usuario */
+.user-message {
+  background:#3A66AA; /* Azul */
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 5px 0;
+  align-self: flex-end;
+  max-width: 70%;
+}
+
+/* Contenedor del input */
+.input-container {
+  display: flex;
+  border-top: 1px solid #ddd;
+  background: #f1f1f1;
+  padding: 10px;
+}
+
+input {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  border-radius: 20px;
+  outline: none;
+  background: #d9d9d9;
+}
+
+button {
+  border: none;
+  background: #2B445F;
+  font-size: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius:  10px;
+}
+
