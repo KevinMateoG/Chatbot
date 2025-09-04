@@ -9,7 +9,7 @@
 <body>
   <!-- Barra superior -->
   <div class="chat-header">
-    <span>Atras</span>
+    <a href="index.html">Atras</a>
   </div>
 
   <!-- Contenedor principal del chat -->
@@ -22,36 +22,121 @@
     <!-- Input de usuario -->
     <div class="input-container">
       <input type="text" id="user-input" placeholder="Escribe tu mensaje...">
-      <button onclick="sendMessage()">✈</button>
+      <button onclick="sendMessage()"></button>
     </div>
   </div>
-
-  <script>
-    function sendMessage() {
-      let input = document.getElementById("user-input");
-      let message = input.value.trim();
-      if (message === "") return;
-
-      let chatBox = document.getElementById("chat-box");
-
-      // mensaje del usuario
-      let userMsg = document.createElement("div");
-      userMsg.className = "user-message";
-      userMsg.innerText = message;
-      chatBox.appendChild(userMsg);
-
-      input.value = "";
-
-      // respuesta automática básica
-      setTimeout(() => {
-        let botMsg = document.createElement("div");
-        botMsg.className = "bot-message";
-        botMsg.innerText = "Respuesta automática del bot...";
-        chatBox.appendChild(botMsg);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }, 800);
+<script>
+// Permite enviar el mensaje con Enter
+document.addEventListener("DOMContentLoaded", function() {
+  const input = document.getElementById("user-input");
+  input.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+      sendMessage();
     }
-  </script>
+  });
+});
+</script>
+
+<script>
+let estado = "pidiendo_tipo";
+let identificacion = {};
+let opciones = null;
+let nodoActual = null;
+
+// Cargar opciones.json
+fetch('opciones.json')
+  .then(res => res.json())
+  .then(data => { opciones = data; });
+
+
+function sendMessage() {
+  let input = document.getElementById("user-input");
+  let message = input.value.trim();
+  if (message === "") return;
+
+  let chatBox = document.getElementById("chat-box");
+
+  let userMsg = document.createElement("div");
+  userMsg.className = "user-message";
+  userMsg.innerText = message;
+  chatBox.appendChild(userMsg);
+
+  input.value = "";
+
+  chatBox.scrollTop = chatBox.scrollHeight; // <-- También aquí para el mensaje del usuario
+
+  procesarFlujo(message, chatBox);
+}
+
+function procesarFlujo(mensaje, chatBox) {
+  if (estado === "pidiendo_tipo") {
+    identificacion.tipo = mensaje;
+    mostrarBot("Ahora ingresa tu número de documento:", chatBox);
+    estado = "pidiendo_numero";
+    return;
+  }
+  if (estado === "pidiendo_numero") {
+    identificacion.numero = mensaje;
+    mostrarBot("¡Gracias! " + identificacion.tipo + " " + identificacion.numero, chatBox);
+    mostrarBot(opciones.pregunta, chatBox);
+    mostrarOpciones(opciones.opciones, chatBox);
+    nodoActual = opciones;
+    estado = "en_opciones";
+    return;
+  }
+  if (estado === "en_opciones") {
+    if (!nodoActual.opciones) return;
+    let seleccion = mensaje.trim();
+    let siguiente = nodoActual.opciones[seleccion];
+    if (!siguiente) {
+      mostrarBot("Opción no válida. Intenta de nuevo.", chatBox);
+      mostrarOpciones(nodoActual.opciones, chatBox);
+      return;
+    }
+    if (siguiente.resultado) {
+      mostrarBot(siguiente.resultado, chatBox);
+      // Reiniciar o terminar
+      mostrarBot("¿Deseas hacer otra consulta? Escribe 'sí' o 'no'.", chatBox);
+      estado = "reiniciar";
+      return;
+    }
+    mostrarBot(siguiente.pregunta, chatBox);
+    mostrarOpciones(siguiente.opciones, chatBox);
+    nodoActual = siguiente;
+    return;
+  }
+  if (estado === "reiniciar") {
+    if (mensaje.toLowerCase() === "sí" || mensaje.toLowerCase() === "si") {
+      nodoActual = opciones;
+      mostrarBot(opciones.pregunta, chatBox);
+      mostrarOpciones(opciones.opciones, chatBox);
+      estado = "en_opciones";
+    } else {
+      mostrarBot("¡Gracias por usar el asistente!", chatBox);
+      estado = "finalizado";
+    }
+    return;
+  }
+}
+
+function mostrarBot(texto, chatBox) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  let textoConLinks = texto.replace(urlRegex, '<a href="$1" target="_blank">haz clic aquí</a>');
+  textoConLinks = textoConLinks.replace(/\n/g, '<br>');
+  let botMsg = document.createElement("div");
+  botMsg.className = "bot-message";
+  botMsg.innerHTML = textoConLinks;
+  chatBox.appendChild(botMsg);
+  chatBox.scrollTop = chatBox.scrollHeight; // <-- Esto hace el scroll automático
+}
+
+function mostrarOpciones(opcionesObj, chatBox) {
+  let opcionesTexto = Object.entries(opcionesObj)
+    .map(([k, v]) => `${k}. ${v.texto}`)
+    .join('\n');
+  mostrarBot(opcionesTexto, chatBox);
+}
+</script>
 </body>
 </html>
 
