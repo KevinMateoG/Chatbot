@@ -1,7 +1,8 @@
 import "./App.css";
 import logoUdem from "../public/logo_udemedellin2.png";
+import { Link } from 'react-router-dom';
 
-export default function index() {
+export default function Index() {
   return (
     <>
       <span className="vertical-text">MinEducación</span>
@@ -17,7 +18,7 @@ export default function index() {
           <a>Icono 1 ▼</a>
           <ul>
             <li>
-              <a href="/chatbot">Promet IA</a>
+              <Link to="/chatbot">Proet IA</Link>
             </li>
             <li>
               <a>Información</a>
@@ -62,9 +63,9 @@ export default function index() {
         </li>
       </ul>
 
-      <a href="/chatbot" className="chatbot-btn" title="Abrir Chatbot">
+      <Link to="/chatbot" className="chatbot-btn" title="Abrir Chatbot">
         💬
-      </a>
+      </Link>
     </>
   );
 }

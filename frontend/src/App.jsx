@@ -1,9 +1,15 @@
-import './App.css';
-import index from '.';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Index from './index';
+import Chatbot from './chatbot';
 
 function App() {
   return (
-    index()
+    <Router>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/chatbot" element={<Chatbot />} />
+      </Routes>
+    </Router>
   );
 }
 
