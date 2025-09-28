@@ -1,76 +1,108 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './chatbot.css';
 
 function Chatbot() {
-  const [messages, setMessages] = useState([{
-    type: 'bot',
-    content: 'Bienvenido al asistente de Uvirtual, aquí resolveremos tus dudas de tu interés.'
-  }]);
-  
-  const [inputMessage, setInputMessage] = useState('');
-  const chatBoxRef = useRef(null);
+  const [messages, setMessages] = useState([
+    { text: "Bienvenido al asistente de Uvirtual, aquí resolveremos tus dudas de tu interés.", type: "bot" },
+    { text: "Por favor ingresa tu tipo de documento de identidad", type: "bot" }
+  ]);
+  const [inputValue, setInputValue] = useState('');
+  const [estado, setEstado] = useState('pidiendo_tipo');
+  const [identificacion, setIdentificacion] = useState({});
+  const [opciones, setOpciones] = useState(null);
+  const [nodoActual, setNodoActual] = useState(null);
 
-  // El auto-scroll es necesario para una buena UX
   useEffect(() => {
-    if (chatBoxRef.current) {
-      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  const handleSendMessage = async () => {
-    if (inputMessage.trim() === '') return;
-
-    // Agregar mensaje del usuario
-    setMessages(prev => [...prev, {
-      type: 'user',
-      content: inputMessage
-    }]);
-
-    try {
-      // Llamada a FastAPI
-      const response = await fetch('http://localhost:8000/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: inputMessage })
+    // Cargar opciones desde el backend de FastAPI
+    fetch('http://localhost:8000/opciones')
+      .then(res => res.json())
+      .then(data => {
+        setOpciones(data);
       });
+  }, []);
 
-      const data = await response.json();
-      
-      setMessages(prev => [...prev, {
-        type: 'bot',
-        content: data.response
-      }]);
-    } catch (error) {
-      console.error('Error:', error);
+  const mostrarMensaje = (texto, tipo) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const textoConLinks = texto.replace(urlRegex, '<a href="$1" target="_blank">haz clic aquí</a>');
+    setMessages(prev => [...prev, { text: textoConLinks, type: tipo }]);
+  };
+
+  const mostrarOpciones = (opcionesObj) => {
+    const opcionesTexto = Object.entries(opcionesObj)
+      .map(([k, v]) => `${k}. ${v.texto}`)
+      .join('\n');
+    mostrarMensaje(opcionesTexto, 'bot');
+  };
+
+  const procesarFlujo = async (mensaje) => {
+    // Enviar mensaje al backend
+    const response = await fetch('http://localhost:8000/procesar_mensaje', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        mensaje,
+        estado,
+        identificacion,
+        nodo_actual: nodoActual
+      }),
+    });
+
+    const data = await response.json();
+    
+    // Actualizar estado según la respuesta del backend
+    setEstado(data.nuevo_estado);
+    setIdentificacion(data.identificacion);
+    setNodoActual(data.nodo_actual);
+
+    // Mostrar mensajes de respuesta
+    data.mensajes.forEach(msg => {
+      mostrarMensaje(msg, 'bot');
+    });
+
+    if (data.opciones) {
+      mostrarOpciones(data.opciones);
     }
+  };
 
-    setInputMessage('');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!inputValue.trim()) return;
+
+    mostrarMensaje(inputValue, 'user');
+    procesarFlujo(inputValue);
+    setInputValue('');
   };
 
   return (
-    <div className="chat-container">
-      <div className="chat-box" ref={chatBoxRef}>
-        {messages.map((message, index) => (
-          <div 
-            key={index} 
-            className={message.type === 'bot' ? 'bot-message' : 'user-message'}
-          >
-            {message.content}
-          </div>
-        ))}
+    <div>
+      <div className="chat-header">
+        <a href="/">Atrás</a>
       </div>
 
-      <div className="input-container">
-        <input
-          type="text"
-          value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-          placeholder="Escribe tu mensaje..."
-        />
-        <button onClick={handleSendMessage}>Enviar</button>
+      <div className="chat-container">
+        <div className="chat-box">
+          {messages.map((msg, index) => (
+            <div 
+              key={index} 
+              className={`${msg.type}-message`}
+              dangerouslySetInnerHTML={{ __html: msg.text }}
+            />
+          ))}
+        </div>
+
+        <div className="input-container">
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Escribe tu mensaje..."
+            />
+            <button type="submit"></button>
+          </form>
+        </div>
       </div>
     </div>
   );
