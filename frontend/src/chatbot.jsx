@@ -1,29 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './chatbot.css';
 
 function Chatbot() {
   const [messages, setMessages] = useState([{
     type: 'bot',
     content: 'Bienvenido al asistente de Uvirtual, aquí resolveremos tus dudas de tu interés.'
-  }, {
-    type: 'bot',
-    content: 'Por favor ingresa tu tipo de documento de identidad'
   }]);
   
   const [inputMessage, setInputMessage] = useState('');
   const chatBoxRef = useRef(null);
 
+  // El auto-scroll es necesario para una buena UX
   useEffect(() => {
     if (chatBoxRef.current) {
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }
   }, [messages]);
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      handleSendMessage();
-    }
-  };
 
   const handleSendMessage = async () => {
     if (inputMessage.trim() === '') return;
@@ -35,8 +27,8 @@ function Chatbot() {
     }]);
 
     try {
-      // Aquí irían las llamadas a tu backend en Python
-      const response = await fetch('tu-endpoint-backend', {
+      // Llamada a FastAPI
+      const response = await fetch('http://localhost:8000/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,7 +38,6 @@ function Chatbot() {
 
       const data = await response.json();
       
-      // Agregar respuesta del bot
       setMessages(prev => [...prev, {
         type: 'bot',
         content: data.response
@@ -59,34 +50,29 @@ function Chatbot() {
   };
 
   return (
-    <>
-      <div className="chat-header">
-        <a href="/">Atrás</a>
+    <div className="chat-container">
+      <div className="chat-box" ref={chatBoxRef}>
+        {messages.map((message, index) => (
+          <div 
+            key={index} 
+            className={message.type === 'bot' ? 'bot-message' : 'user-message'}
+          >
+            {message.content}
+          </div>
+        ))}
       </div>
 
-      <div className="chat-container">
-        <div className="chat-box" ref={chatBoxRef}>
-          {messages.map((message, index) => (
-            <div 
-              key={index} 
-              className={message.type === 'bot' ? 'bot-message' : 'user-message'}
-              dangerouslySetInnerHTML={{ __html: message.content }}
-            />
-          ))}
-        </div>
-
-        <div className="input-container">
-          <input
-            type="text"
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Escribe tu mensaje..."
-          />
-          <button onClick={handleSendMessage}></button>
-        </div>
+      <div className="input-container">
+        <input
+          type="text"
+          value={inputMessage}
+          onChange={(e) => setInputMessage(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+          placeholder="Escribe tu mensaje..."
+        />
+        <button onClick={handleSendMessage}>Enviar</button>
       </div>
-    </>
+    </div>
   );
 }
 
