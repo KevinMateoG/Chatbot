@@ -13,9 +13,26 @@ Mario Andrade
 
 3.Requisitos previos
 
-- Python 3.10 o superior
+- Python 3.12 o superior
 - Tener instalado `venv` (entorno virtual de Python recomendado)
-- Instalar las dependencias necesarias (si las hay)
+- Tener node js y verificar que el comando de npm funcione
+- Instalar las dependencias necesarias
+- Para instalar las dependecias de react se debe ubicar en la carpeta raiz y ejecutar en consola
+
+'''
+cd fronted
+'''
+
+y luego ejecutar 
+
+'''
+npm install
+'''
+
+- luego para intalar dependecias de python esto incluyendo fastapi se instala por medio del comando
+'''
+pip install requirements.txt
+'''
 
 4.Que solicita el programa?
 Estudiante:
