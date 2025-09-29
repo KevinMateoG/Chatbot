@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import './chatbot.css';
 
+
+
 function Chatbot() {
   const [messages, setMessages] = useState([
     { text: "Bienvenido al asistente de Uvirtual, aquí resolveremos tus dudas de tu interés.", type: "bot" },
@@ -76,11 +78,12 @@ function Chatbot() {
   };
 
   return (
+    
     <div>
       <div className="chat-header">
         <a href="/">Atrás</a>
       </div>
-
+       <img src={logoUdem} alt="logo udem" height="70" />
       <div className="chat-container">
         <div className="chat-box">
           {messages.map((msg, index) => (
