@@ -7,7 +7,7 @@ sys.path.append(str(backend_path))
 
 from controller.base_datos import *
 
-class Chat:
+class ChatBot:
     def __init__(self, request, opciones:Dict):
         self.opciones = opciones
         self.request = request

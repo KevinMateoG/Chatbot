@@ -30,4 +30,4 @@ async def get_opciones():
 
 @app.post("/procesar_mensaje")
 async def procesar_mensaje(request: MensajeRequest):
-    return Chat(request,OPCIONES).respuesta()
+    return ChatBot(request,OPCIONES).respuesta()
