@@ -12,6 +12,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.loguito{
+  background-color: #C2262B;
+}
+
 
 a {
   font-weight: 500;

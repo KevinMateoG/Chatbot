@@ -6,7 +6,9 @@ export default function Index() {
   return (
     <>
       <span className="vertical-text">MinEducación</span>
+      <div className="loguito">
       <img src={logoUdem} alt="logo udem" height="70" />
+      </div>
       <div>
         <div>
           <h1 className="centrado">título 1</h1>

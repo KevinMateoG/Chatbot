@@ -83,10 +83,11 @@ function Chatbot() {
     <div>
       <div className="chat-header">
         <a href="/">Atrás</a>
+        <img src={logoUdem} alt="logo udem" height="70" />
       </div>
-      <div className='loguito'>
-       <img src={logoUdem} alt="logo udem" height="70" />
-      </div>
+
+       
+
       <div className="chat-container">
         <div className="chat-box">
           {messages.map((msg, index) => (

@@ -5,6 +5,10 @@
   padding: 12px;
   font-size: 16px;
   font-weight: bold;
+
+  display: flex;              /* Para alinear en fila */
+  align-items: center;        /* Centrar verticalmente */
+  gap: 10px;  
 }
 
 /* Contenedor del chat */
@@ -17,9 +21,7 @@
   overflow: hidden;
 }
 
-.loguito{
-  background-color: #C2262B;
-}
+
 
 /* Caja de mensajes */
 .chat-box {
