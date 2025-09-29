@@ -21,6 +21,12 @@
   src: url('fonts/Nexa-Bold.ttf') format('truetype');
   font-weight: bold;
 }
+html,body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
 
 body {
       font-family: 'nexa', sans-serif;

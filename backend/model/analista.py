@@ -5,3 +5,4 @@ class Analista(Usuario):
         super().__init__(nombre, apellido, ide, tipo_ide)
         self.reportes = []
     
+
