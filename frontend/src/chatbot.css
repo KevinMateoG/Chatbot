@@ -17,6 +17,10 @@
   overflow: hidden;
 }
 
+.loguito{
+  background-color: #C2262B;
+}
+
 /* Caja de mensajes */
 .chat-box {
   flex: 1;
