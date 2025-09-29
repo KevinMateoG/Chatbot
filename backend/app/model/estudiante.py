@@ -1,8 +1,6 @@
-from materias import Materias
 from usuario import Usuario
-from typing import Str,Int
 class Estudiante(Usuario):
-    def __init__(self, nombre: Str, apellido: Str, ide: Int, tipo_ide: Str):
+    def __init__(self, nombre: str = None, apellido: str=None, ide: int=None, tipo_ide: str=None):
         super().__init__(nombre, apellido, ide, tipo_ide)
         self.consultas = []
         self.tareas = []
@@ -12,7 +10,7 @@ class Estudiante(Usuario):
     def __repr__(self):
         return super().__repr__()
     
-    def prioridad_por_materias(self, materia: Materias):
+    def prioridad_por_materias(self, materia):
         self.materias.append(materia)
         return f"Materia {materia} ha sido agregada"
     

@@ -1,6 +1,6 @@
-from typing import Str,Int
+
 class Usuario:
-    def __init__(self, nombre: Str, apellido: Str, ide: Int, tipo_ide: Str):
+    def __init__(self, nombre: str, apellido: str, ide: int, tipo_ide: str):
         self.nombre = nombre
         self.apellido = apellido
         self.ide = ide

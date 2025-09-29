@@ -1,6 +1,6 @@
-from typing import Str,Int
+from typing import str,int
 class Materias:
-    def __init__(self,nombre:Str,codigo:Str,creditos:Int):
+    def __init__(self,nombre:str,codigo:str,creditos:int):
         self.nombre = nombre
         self.codigo = codigo
         self.creditos = creditos
