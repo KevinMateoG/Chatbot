@@ -1,14 +1,11 @@
-import json
 from typing import Dict
-from pydantic import BaseModel, Field 
 import sys
 from pathlib import Path
 
-
-backend_path = Path(__file__).resolve().parent.parent.parent
+backend_path = Path(__file__).resolve().parent
 sys.path.append(str(backend_path))
 
-from app.model.base_datos import *
+from controller.base_datos import *
 
 class Chat:
     def __init__(self, request, opciones:Dict):
