@@ -1,15 +1,8 @@
 import json
 from pydantic import BaseModel, Field # Importamos Field
 
-# MODIFICACIÓN: Usamos Field(default_factory=dict) para manejar diccionarios opcionales
-class MensajeRequest(BaseModel):
-    mensaje: str
-    estado: str
-    identificacion: dict = Field(default_factory=dict)
-    nodo_actual: dict = Field(default_factory=dict)
-
 class Chat:
-    def __init__(self, request:MensajeRequest, opciones:dict):
+    def __init__(self, request, opciones:dict):
         self.opciones = opciones
         self.request = request
 
