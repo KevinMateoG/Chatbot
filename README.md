@@ -19,20 +19,20 @@ Mario Andrade
 - Instalar las dependencias necesarias
 - Para instalar las dependecias de react se debe ubicar en la carpeta raiz y ejecutar en consola
 
-'''
+```
 cd fronted
-'''
+```
 
 y luego ejecutar 
 
-'''
+```
 npm install
-'''
+```
 
 - luego para intalar dependecias de python esto incluyendo fastapi se instala por medio del comando
-'''
+```
 pip install requirements.txt
-'''
+```
 
 4.Que solicita el programa?
 Estudiante:
