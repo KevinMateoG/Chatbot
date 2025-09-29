@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 export default function Index() {
   return (
     <>
-      <span className="vertical-text">MinEducación</span>
       <div className="loguito">
+      <span className="vertical-text">MinEducación</span>
       <img src={logoUdem} alt="logo udem" height="70" />
       </div>
       <div>

@@ -13,7 +13,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 .loguito{
-  background-color: #C2262B;
+   background-color: #C2262B; /* Rojo oscuro */
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+
+  display: flex;          /* Hace que estén en fila */
+  align-items: center;    /* Centra verticalmente */
+  gap: 12px;  
 }
 
 
