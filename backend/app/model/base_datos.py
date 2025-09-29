@@ -1,7 +1,12 @@
 import psycopg2
 import sys
-sys.path.append(".")
-from backend import secretconfig
+from pathlib import Path
+
+# Agregar el directorio raíz del backend al PATH
+backend_path = Path(__file__).resolve().parent.parent.parent
+sys.path.append(str(backend_path))
+
+import secretconfig
 
 class BaseDatos:
 

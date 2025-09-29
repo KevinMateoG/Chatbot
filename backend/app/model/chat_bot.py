@@ -1,8 +1,14 @@
 import json
-from estudiante import Estudiante
 from typing import Dict
-from pydantic import BaseModel, Field # Importamos Field
-from base_datos import *
+from pydantic import BaseModel, Field 
+import sys
+from pathlib import Path
+
+
+backend_path = Path(__file__).resolve().parent.parent.parent
+sys.path.append(str(backend_path))
+
+from app.model.base_datos import *
 
 class Chat:
     def __init__(self, request, opciones:Dict):
@@ -35,7 +41,7 @@ class Chat:
             respuesta["identificacion"] = identificacion
             respuesta["nodo_actual"] = self.opciones
             respuesta["mensajes"].extend([
-                f"¡Gracias! {identificacion['tipo']} {BaseDatos.buscaride(identificacion['numero'])[0]}",
+                f"¡Gracias! {BaseDatos.buscaride(identificacion['numero'])[0]}",
                 self.opciones["pregunta"]
             ])
             respuesta["opciones"] = self.opciones["opciones"]
