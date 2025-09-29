@@ -28,7 +28,7 @@
 
 /* Mensajes del bot */
 .bot-message {
-  background: #932428; /* Rojo */
+  background: #d85d65; /* Rojo */
   color: white;
   padding: 10px;
   border-radius: 10px;
@@ -39,8 +39,8 @@
 
 /* Mensajes del usuario */
 .user-message {
-  background:#3A66AA; /* Azul */
-  color: white;
+  background:#e5e7eb; /* Azul */
+  color: 111827;
   padding: 10px;
   border-radius: 10px;
   margin: 5px 0;
