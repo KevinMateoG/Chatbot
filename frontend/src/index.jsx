@@ -12,7 +12,7 @@ export default function Index() {
       <center>
      <div>  
         <div className="estoy">
-            <h1 class="centrado">Bienvenido</h1>
+            <h1 className="centrado">Bienvenido</h1>
             <p className="descripcion">
                 Bienvenido a nuestro ambiente digital, aquí podrás encontrar cursos, recursos y más.
             </p>
@@ -20,7 +20,7 @@ export default function Index() {
      </div>
     </center>
 
-    <center><ul class="centrado">
+    <center><ul className="centrado">
     
         <li >
             <a>Chat LMS▼</a>
