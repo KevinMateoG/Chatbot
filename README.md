@@ -43,4 +43,14 @@ Tareas
 Materias que cursa
 
 
+## Sprint 2
+
+machine learning
+
+```
+scikitlearn 
+https://scikit-learn.org/stable/index.html
+```
+
+
 
