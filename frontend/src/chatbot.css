@@ -1,6 +1,30 @@
-/* Barra superior */
+body{
+  background-color: #B9B9B8;
+
+}
+
+
+
+.atras1{
+  background-color: #ffffff51;
+  color: rgba(255, 255, 255, 0.425);
+  font-size: 24px;         /* Aumentar tamaño de la flecha */
+  padding: 8px 15px;       /* Ajustar el padding para mejor apariencia */
+  cursor: pointer;         /* Cambiar el cursor a pointer */
+  border-radius: 5px;
+
+}
+
+.flechita{
+  background-color: #C2262B;
+}
+
+.atras:hover{
+  background-color: #ffffff;
+  color: black;
+}
 .chat-header {
-  background-color: #C2262B; /* Rojo oscuro */
+  background-color: #ffffff51; /* Rojo oscuro */
   color: white;
   padding: 12px;
   font-size: 16px;
@@ -11,6 +35,7 @@
   gap: 10px;  
 }
 
+
 /* Contenedor del chat */
 .chat-container {
   display: flex;
@@ -19,9 +44,9 @@
   background: #fff;
   border-radius: 0 0 10px 10px;
   overflow: hidden;
+
+  
 }
-
-
 
 /* Caja de mensajes */
 .chat-box {
@@ -30,36 +55,51 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  background-color: #B9B9B8;
+
+  
 }
 
 /* Mensajes del bot */
 .bot-message {
-  background: #d85d65; /* Rojo */
+  background: #C2262B; /* Rojo */
   color: white;
   padding: 10px;
   border-radius: 10px;
   margin: 5px 0;
   align-self: flex-start;
   max-width: 70%;
+  box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.345) ;
 }
 
 /* Mensajes del usuario */
 .user-message {
-  background:#a7c0f3; /* Azul */
+  background:#3A66AA; /* Azul */
   color: 111827;
   padding: 10px;
   border-radius: 10px;
   margin: 5px 0;
   align-self: flex-end;
   max-width: 70%;
+  box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.379);
+
 }
 
 /* Contenedor del input */
 .input-container {
-  display: flex;
   border-top: 1px solid #ddd;
-  background: #f1f1f1;
-  padding: 10px;
+  background: #929292;
+  width: 100%; 
+  align-items: center;          /* Ancho del contenedor */
+
+
+
+}
+.input-container form {
+  display: flex;      /* pone input y botón en fila */
+  width: 80%;        /* el form ocupa todo el ancho */
+  align-items: center;
+
 }
 
 input {
@@ -68,15 +108,22 @@ input {
   padding: 10px;
   border-radius: 20px;
   outline: none;
-  background: #d9d9d9;
+  background: #d9d9d9;           /* El input ocupa todo el ancho disponible */
+  box-sizing: border-box;
+  color: black;
+
+
 }
 
 button {
   border: none;
   background: #C2262B;
-  font-size: 20px;
+  font-size: 10px;
   margin-left: 10px;
   cursor: pointer;
   border-radius:  10px;
+
 }
+
+
 

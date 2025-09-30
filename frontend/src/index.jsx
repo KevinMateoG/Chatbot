@@ -6,13 +6,16 @@ export default function Index() {
   return (
     <>
       <div className="loguito">
-      <span className="vertical-text">MinEducación</span>
+      <span className="vertical-text" >MinEducación</span>
       <img src={logoUdem} alt="logo udem" height="70" />
       </div>
       <center>
      <div>  
-        <div>
-            <h1 class="centrado">titulo 1</h1>
+        <div className="estoy">
+            <h1 class="centrado">Bienvenido</h1>
+            <p className="descripcion">
+                Bienvenido a nuestro ambiente digital, aquí podrás encontrar cursos, recursos y más.
+            </p>
         </div>
      </div>
     </center>
@@ -20,10 +23,10 @@ export default function Index() {
     <center><ul class="centrado">
     
         <li >
-            <a>ICONO 1 ▼</a>
+            <a>Chat LMS▼</a>
         <ul>
-            <li><a>INFORMACION</a></li>
-            <li><a>INFORMACION</a></li>
+            <li><Link to="/chatbot">PromeIA</Link></li>
+            
         </ul>
         
         </li>
@@ -54,7 +57,12 @@ export default function Index() {
         </ul>
         </li>
     
-    </ul>.
+    </ul>
+    
+    <button className="curso1">Fundamentos de Diseño de Software</button>
+    <button className="curso2">Calculo</button>
+    <button className="curso3">Legislacion</button>
+    <button className="curso4">Fisica II</button>
     </center>
       <Link to="/chatbot" className="chatbot-btn" title="Abrir Chatbot">
         💬

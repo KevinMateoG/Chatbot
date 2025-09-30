@@ -1,11 +1,12 @@
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: rgb(255, 255, 255);
+  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,22 +14,85 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.descripcion{
+  color: black;
+  margin-bottom: 30px;
+}
+.vertical-text{
+  color: black;
+  font-size: 13px;
+}
+
+.estoy{
+  margin-top: 20px;
+}
+
+.curso1{
+ background-color: violet;
+ text-align: center;
+ height: 200px;
+ width: 300px;
+}
+
+.curso1:hover{
+  background-color: rgb(112, 57, 112);
+  transition: 2s;
+}
+
+.curso2{
+  background-color: aqua;
+  text-align: center;
+  height: 200px;
+  width: 300px;
+}
+
+.curso2:hover{
+  background-color: rgb(26, 103, 103);
+  transition: 2s;
+}
+
+.curso3{
+  background-color: yellowgreen ;
+  text-align: center;
+  height: 200px;
+  width: 300px;
+}
+
+.curso3:hover{
+  background-color: rgb(91, 121, 30);
+  transition: 2s;
+}
+
+.curso4{
+  background-color: green;
+  text-align: center;
+  height: 200px;
+  width: 300px;
+}
+
+.curso4:hover{
+  background-color:rgb(4, 55, 4);
+  transition: 2s;
+}
+
 .centrado{
     text-align: center;
     width: 40% ;
     border-radius: 40px;
+    margin-bottom: 10px;
+  
+
 }
 
-.loguito{
-   background-color: #C2262B; /* Rojo oscuro */
+.loguito {
+  background-color: #ffffff; /* gris solo para el header */
   color: white;
   padding: 12px;
   font-size: 16px;
   font-weight: bold;
-
-  display: flex;          /* Hace que estén en fila */
-  align-items: center;    /* Centra verticalmente */
-  gap: 12px;  
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 
@@ -43,15 +107,17 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: #b9b9b9; /* blanco para todo el fondo */
+  display: block;            /* evita que el body se comporte como flex */
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  background-color: #b9b9b9;;
+  color: black;
 }
 
 button {

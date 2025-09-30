@@ -82,7 +82,8 @@ function Chatbot() {
     
     <div>
       <div className="chat-header">
-        <a href="/">Atrás</a>
+
+       <button className='atras1'><a href="/">↶</a></button> 
         <img src={logoUdem} alt="logo udem" height="70" />
       </div>
 
@@ -100,15 +101,15 @@ function Chatbot() {
         </div>
 
         <div className="input-container">
-          <form onSubmit={handleSubmit}>
-            <input
+          <center><form onSubmit={handleSubmit}>
+            <input className='barra'
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Escribe tu mensaje..."
             />
-            <button type="submit"></button>
-          </form>
+            <button className='flechita' type="submit">➤</button>
+          </form></center>
         </div>
       </div>
     </div>
