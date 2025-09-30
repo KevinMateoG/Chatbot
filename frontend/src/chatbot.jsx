@@ -38,7 +38,6 @@ function Chatbot() {
   };
 
   const procesarFlujo = async (mensaje) => {
-    // Enviar mensaje al backend
     const response = await fetch('http://localhost:8000/procesar_mensaje', {
       method: 'POST',
       headers: {

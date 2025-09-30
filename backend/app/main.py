@@ -5,16 +5,14 @@ import json
 from model.chat_bot import *
 app = FastAPI()
 
-# Configurar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # URL de tu frontend
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Cargar opciones.json
 with open('opciones.json') as f:
     OPCIONES = json.load(f)
 
