@@ -12,6 +12,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.centrado{
+    text-align: center;
+    width: 40% ;
+    border-radius: 40px;
+}
+
 .loguito{
    background-color: #C2262B; /* Rojo oscuro */
   color: white;

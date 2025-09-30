@@ -9,62 +9,53 @@ export default function Index() {
       <span className="vertical-text">MinEducación</span>
       <img src={logoUdem} alt="logo udem" height="70" />
       </div>
-      <div>
+      <center>
+     <div>  
         <div>
-          <h1 className="centrado">título 1</h1>
+            <h1 class="centrado">titulo 1</h1>
         </div>
-      </div>
+     </div>
+    </center>
 
-      <ul className="centrado">
-        <li>
-          <a>Icono 1 ▼</a>
-          <ul>
-            <li>
-              <Link to="/chatbot">Proet IA</Link>
-            </li>
-            <li>
-              <a>Información</a>
-            </li>
-          </ul>
+    <center><ul class="centrado">
+    
+        <li >
+            <a>ICONO 1 ▼</a>
+        <ul>
+            <li><a>INFORMACION</a></li>
+            <li><a>INFORMACION</a></li>
+        </ul>
+        
         </li>
 
         <li>
-          <a>Icono 2 ▼</a>
-          <ul>
-            <li>
-              <a>Información</a>
-            </li>
-            <li>
-              <a>Información</a>
-            </li>
-          </ul>
+            <a>ICONO 2 ▼</a>    
+        <ul>
+            <li><a>INFORMACION</a></li>
+            <li><a>INFORMACION</a></li>
+        </ul>
+        
         </li>
 
         <li>
-          <a>Icono 3 ▼</a>
-          <ul>
-            <li>
-              <a>Información</a>
-            </li>
-            <li>
-              <a>Información</a>
-            </li>
-          </ul>
+            <a>ICONO 3 ▼</a>
+        <ul>
+            <li><a>INFORMACION</a></li>
+            <li><a>INFORMACION</a></li>
+        </ul>
+        
         </li>
 
         <li>
-          <a>Icono 4 ▼</a>
-          <ul>
-            <li>
-              <a>Información</a>
-            </li>
-            <li>
-              <a>Información</a>
-            </li>
-          </ul>
+            <a>ICONO 4 ▼</a>
+        <ul>
+            <li><a>INFORMACION</a></li>
+            <li><a>INFORMACION</a></li>
+        </ul>
         </li>
-      </ul>
-
+    
+    </ul>.
+    </center>
       <Link to="/chatbot" className="chatbot-btn" title="Abrir Chatbot">
         💬
       </Link>
