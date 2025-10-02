@@ -108,7 +108,9 @@ function Chatbot() {
               placeholder="Escribe tu mensaje..."
             />
             <button className='flechita' type="submit">➤</button>
+            <button className='flechita'>Limpiar</button>
           </form></center>
+          
         </div>
       </div>
     </div>
