@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './chatbot.css';
 import logoUdem from "../public/logo_udemedellin2.png";
+import { Link } from 'react-router-dom';
 
 
 
@@ -76,6 +77,10 @@ function Chatbot() {
     procesarFlujo(inputValue);
     setInputValue('');
   };
+  
+  const refrescarPagina = () => {
+    window.location.reload(false);
+  };
 
   return (
     
@@ -107,8 +112,8 @@ function Chatbot() {
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Escribe tu mensaje..."
             />
-            <button className='flechita' type="submit">➤</button>
-            <button className='flechita'>Limpiar</button>
+            <button className='flechita' type="submit" >➤</button>
+            <button className='flechita' onClick={refrescarPagina}>Limpiar</button>
           </form></center>
           
         </div>

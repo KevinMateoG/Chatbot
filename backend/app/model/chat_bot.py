@@ -54,16 +54,13 @@ class ChatBot:
                     respuesta["opciones"] = nodo_actual["opciones"]
                     return respuesta
 
-                # --- NUEVO: DETECTAR INICIO DE ENCUESTA ---
                 if siguiente.get("pregunta_encuesta"):
-                    # Inicializar datos temporales de la encuesta
                     if "datos_encuesta" not in identificacion:
                         identificacion["datos_encuesta"] = {}
                         
                     respuesta["nuevo_estado"] = "en_encuesta"
                     respuesta["nodo_actual"] = siguiente 
                     
-                    # Mostrar la primera pregunta de la encuesta y sus opciones
                     respuesta["mensajes"].append(siguiente["pregunta_encuesta"])
                     respuesta["opciones"] = siguiente["respuestas_encuesta"]
                     return respuesta
