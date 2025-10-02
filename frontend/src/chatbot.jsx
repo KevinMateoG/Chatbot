@@ -50,7 +50,7 @@ function Chatbot() {
         nodo_actual: nodoActual
       }),
     });
-
+      
     const data = await response.json();
     
     // Actualizar estado según la respuesta del backend

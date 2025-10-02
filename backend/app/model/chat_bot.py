@@ -4,7 +4,7 @@ from pathlib import Path
 
 backend_path = Path(__file__).resolve().parent
 sys.path.append(str(backend_path))
-
+from encuesta import *
 from controller.base_datos import *
 
 class ChatBot:
@@ -54,17 +54,71 @@ class ChatBot:
                     respuesta["opciones"] = nodo_actual["opciones"]
                     return respuesta
 
+                # --- NUEVO: DETECTAR INICIO DE ENCUESTA ---
+                if siguiente.get("pregunta_encuesta"):
+                    # Inicializar datos temporales de la encuesta
+                    if "datos_encuesta" not in identificacion:
+                        identificacion["datos_encuesta"] = {}
+                        
+                    respuesta["nuevo_estado"] = "en_encuesta"
+                    respuesta["nodo_actual"] = siguiente 
+                    
+                    # Mostrar la primera pregunta de la encuesta y sus opciones
+                    respuesta["mensajes"].append(siguiente["pregunta_encuesta"])
+                    respuesta["opciones"] = siguiente["respuestas_encuesta"]
+                    return respuesta
+
                 if "resultado" in siguiente:
                     respuesta["nuevo_estado"] = "reiniciar"
                     respuesta["mensajes"].extend([
                         siguiente["resultado"],
                     "¿Deseas hacer otra consulta? Escribe 'sí' o 'no'."
                     ])
+                
                 else:
-                    respuesta["nodo_actual"] = siguiente
-                    respuesta["mensajes"].append(siguiente["pregunta"])
-                    respuesta["opciones"] = siguiente["opciones"]
+                    if "pregunta" in siguiente and "opciones" in siguiente:
+                        respuesta["nodo_actual"] = siguiente
+                        respuesta["mensajes"].append(siguiente["pregunta"])
+                        respuesta["opciones"] = siguiente["opciones"]
+                    else:
+                        respuesta["mensajes"].append("Error en la estructura del nodo. No se encontró 'pregunta'.")
+                        respuesta["opciones"] = nodo_actual["opciones"]
+                        return respuesta 
 
+        elif estado == "en_encuesta":
+            seleccion = mensaje.strip()
+            respuestas_validas = nodo_actual.get("respuestas_encuesta", {})
+            respuesta_seleccionada = respuestas_validas.get(seleccion)
+
+            if not respuesta_seleccionada:
+                respuesta["mensajes"].append("Opción no válida para la encuesta. Por favor, selecciona un número de la lista.")
+                respuesta["mensajes"].append(nodo_actual["pregunta_encuesta"])
+                respuesta["opciones"] = respuestas_validas
+                return respuesta
+
+            dato_clave = respuesta_seleccionada["dato_clave"]
+            identificacion["datos_encuesta"][dato_clave] = respuesta_seleccionada["texto"]
+
+            siguiente_nodo = nodo_actual.get("siguiente")
+
+            if siguiente_nodo:
+                respuesta["nodo_actual"] = siguiente_nodo
+                
+                respuesta["mensajes"].append(siguiente_nodo["pregunta_encuesta"])
+                respuesta["opciones"] = siguiente_nodo["respuestas_encuesta"]
+                
+                return respuesta 
+            
+            else:
+                mensaje_registro = encuesta.subir_opciones(identificacion['numero'], identificacion["datos_encuesta"])
+                
+                identificacion["datos_encuesta"] = {}
+                respuesta["nuevo_estado"] = "reiniciar"
+                respuesta["mensajes"].extend([
+                    mensaje_registro,
+                    "¿Deseas hacer otra consulta? Escribe 'sí' o 'no'."
+                ])
+                
         elif estado == "reiniciar":
             if mensaje.lower() in ["sí", "si"]:
                 respuesta["nuevo_estado"] = "en_opciones"
@@ -74,8 +128,4 @@ class ChatBot:
             else:
                 respuesta["nuevo_estado"] = "finalizado"
                 respuesta["mensajes"].append("¡Gracias por usar el asistente!")
-
         return respuesta
-    
-    def buscar_estudiante (self,Estudiante):
-        pass

@@ -65,6 +65,33 @@
         "4": { "texto": "Preguntas frecuentes", "resultado": "Aquí están las FAQ más comunes." },
         "5": { "texto": "Hablar con un agente", "resultado": "Te paso contacto de agente y horarios." }
       }
+    },
+    "6": {
+      "texto": "Encuesta de satisfacción",
+      "pregunta": "Por favor, responde la siguiente pregunta:",
+      "opciones": {
+        "1": {
+          "texto": "Comenzar Encuesta",
+          "pregunta_encuesta": "¿A qué facultad perteneces? (Responde con el número)",
+          "respuestas_encuesta": {
+            "1": { "texto": "Ingeniería", "dato_clave": "Facultad" },
+            "2": { "texto": "Diseño", "dato_clave": "Facultad" },
+            "3": { "texto": "Comunicación", "dato_clave": "Facultad" },
+            "4": { "texto": "Ciencias Básicas", "dato_clave": "Facultad" }
+          },
+          "siguiente": {
+            "pregunta_encuesta": "¿Qué tan satisfecho estás con la atención recibida? (Responde del 1 al 5, siendo 5 muy satisfecho)",
+            "respuestas_encuesta": {
+              "1": { "texto": "1 (Muy Insatisfecho)", "dato_clave": "Satisfaccion" },
+              "2": { "texto": "2 (Insatisfecho)", "dato_clave": "Satisfaccion" },
+              "3": { "texto": "3 (Neutral)", "dato_clave": "Satisfaccion" },
+              "4": { "texto": "4 (Satisfecho)", "dato_clave": "Satisfaccion" },
+              "5": { "texto": "5 (Muy Satisfecho)", "dato_clave": "Satisfaccion" }
+            },
+            "resultado_encuesta": true
+          }
     }
+  }
+}
   }
 }
