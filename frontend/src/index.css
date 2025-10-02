@@ -28,50 +28,50 @@
 }
 
 .curso1{
- background-color: violet;
+ background-color: #781014;
  text-align: center;
  height: 200px;
  width: 300px;
 }
 
 .curso1:hover{
-  background-color: rgb(112, 57, 112);
+  background-color: #4b0b0d;
   transition: 2s;
 }
 
 .curso2{
-  background-color: aqua;
+  background-color: #781014;
   text-align: center;
   height: 200px;
   width: 300px;
 }
 
 .curso2:hover{
-  background-color: rgb(26, 103, 103);
+  background-color: #4b0b0d;
   transition: 2s;
 }
 
 .curso3{
-  background-color: yellowgreen ;
+  background-color: #781014 ;
   text-align: center;
   height: 200px;
   width: 300px;
 }
 
 .curso3:hover{
-  background-color: rgb(91, 121, 30);
+  background-color: #4b0b0d;
   transition: 2s;
 }
 
 .curso4{
-  background-color: green;
+  background-color: #781014;
   text-align: center;
   height: 200px;
   width: 300px;
 }
 
 .curso4:hover{
-  background-color:rgb(4, 55, 4);
+  background-color:#4b0b0d;
   transition: 2s;
 }
 
