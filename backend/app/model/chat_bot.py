@@ -12,10 +12,12 @@ class ChatBot:
         self.opciones = opciones
         self.request = request
 
+    def _mensaje_error(self, mensaje):
+        return mensaje
+
     def respuesta(self):
         """Controla el flujo principal del chatbot según el estado del usuario."""
         estado = self.request.estado
-
         if estado == "pidiendo_tipo":
             return self._procesar_tipo()
         elif estado == "pidiendo_numero":
@@ -23,6 +25,7 @@ class ChatBot:
         elif estado == "en_opciones":
             return self._procesar_opciones()
         elif estado == "en_encuesta":
+            print("hola")
             return self._procesar_encuesta()
         elif estado == "reiniciar":
             return self._reiniciar_conversacion()
@@ -65,7 +68,7 @@ class ChatBot:
 
         # Buscar nombre en la BD (si existe)
         try:
-            nombre = BaseDatos.buscaride(identificacion["numero"])[0]
+            nombre = BaseDatos.buscar_id(identificacion["numero"])[0]
             respuesta["mensajes"].append(f"¡Gracias! {nombre}")
         except Exception:
             respuesta["mensajes"].append("Número no encontrado en la base de datos.")
@@ -95,8 +98,15 @@ class ChatBot:
                 "¿Deseas hacer otra consulta? Escribe 'sí' o 'no'."
             ])
         else:
-            # Pasar al siguiente nodo
-            if "pregunta" in seleccion and "opciones" in seleccion:
+            
+            if "pregunta_encuesta" in seleccion:
+                respuesta["nuevo_estado"] = "en_encuesta"
+                respuesta["nodo_actual"] = seleccion
+                respuesta["mensajes"].append(seleccion["pregunta_encuesta"])
+                respuesta["opciones"] = seleccion["respuestas_encuesta"]
+                return respuesta
+            
+            elif "pregunta" in seleccion and "opciones" in seleccion:
                 respuesta["nodo_actual"] = seleccion
                 respuesta["mensajes"].append(seleccion["pregunta"])
                 respuesta["opciones"] = seleccion["opciones"]

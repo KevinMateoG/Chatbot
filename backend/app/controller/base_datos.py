@@ -13,7 +13,7 @@ class BaseDatos:
     def consulta_estudiante ():
         cursor = BaseDatos.obtener_cursor()
 
-    def buscaride (id):
+    def buscar_id (id):
         cursor = BaseDatos.obtener_cursor()
 
         consulta = f"select nombre from estudiante where id like '{id}'"
@@ -24,5 +24,6 @@ class BaseDatos:
 
     def obtener_cursor():
         connection = psycopg2.connect(database=secretconfig.PGDATABASE, user=secretconfig.PGUSER, password=secretconfig.PGPASSWORD, host=secretconfig.PGHOST)
+        connection.autocommit = True
         cursor = connection.cursor()
         return cursor

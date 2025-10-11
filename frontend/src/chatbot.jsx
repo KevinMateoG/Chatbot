@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import './chatbot.css';
 import logoUdem from "../public/logo_udemedellin2.png";
-import { Link } from 'react-router-dom';
-
 
 
 function Chatbot() {
