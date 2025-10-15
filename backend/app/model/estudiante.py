@@ -19,3 +19,6 @@ class Estudiante(Usuario):
     
     def recibir_encuesta(self, encuesta):
         self.encuestas.append(encuesta)
+
+    def ver_prioridad():
+        pass
