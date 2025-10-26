@@ -223,9 +223,13 @@ class ChatBot:
         else:
             # Verificar si tiene un estado específico (como ordenar_materias)
             if "estado" in seleccion:
-                respuesta["nuevo_estado"] = seleccion["estado"]
-                # No agregamos mensaje aquí, lo manejará el método específico
-                return respuesta
+                estado = seleccion["estado"]
+                if estado == "ordenar_materias":
+                    return self._priorizar_materias()
+                else:
+                    # Para otros estados futuros
+                    respuesta["nuevo_estado"] = estado
+                    return respuesta
             
             # Verificar si es una encuesta
             elif "pregunta_encuesta" in seleccion:
