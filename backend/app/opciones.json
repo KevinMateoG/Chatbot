@@ -183,8 +183,20 @@
             "libre": { "dato_clave": "descripcion" }
           },
           "resultado_sugerencia": true
+        
+        }
+      }
+    },
+    "8": {
+      "texto": "Calificar profesores",
+      "pregunta": "¿Que deseas hacer?",
+      "opciones":{
+        "1": {
+          "texto": "ir a calificar",
+          "resultado": "para calificar a tus profesores ingresa aqui: https://app.udem.edu.co/ServiciosEnLinea/login.html"
         }
       }
     }
+
   }
 }
