@@ -1,7 +1,7 @@
 from typing import Dict
 import sys
 from pathlib import Path
-
+from materia import Materia
 backend_path = Path(__file__).resolve().parent
 sys.path.append(str(backend_path))
 from encuesta import *
@@ -29,11 +29,16 @@ class ChatBot:
             return self._procesar_encuesta()
         elif estado == "en_sugerencia":
             return self._procesar_sugerencia()
+        elif estado == "ordenar_materias":
+            return self._priorizar_materias()
         elif estado == "reiniciar":
             return self._reiniciar_conversacion()
         else:
             return self._mensaje_error("Estado no reconocido o fuera de flujo.")
 
+    def _priorizar_materias(self):
+        ...
+        
     def _procesar_sugerencia(self):
         """Procesa las sugerencias del buzón paso a paso."""
         mensaje = self.request.mensaje.strip()

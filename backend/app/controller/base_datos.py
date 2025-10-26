@@ -32,6 +32,28 @@ class BaseDatos:
             db.close()
 
     @staticmethod
+    def buscar_materias_de_estudiante(id):
+        db = BaseDatos.get_session()
+        try:
+            consulta = text("select id_materia from estudiante_materias where id_estudiante like :id")
+            result = db.execute(consulta, {"id": f"{id}"})
+            resultado = result.fetchall()
+            return resultado
+        finally:
+            db.close()
+
+    @staticmethod
+    def buscar_materias_por_id(id_materia):
+        db = BaseDatos.get_session()
+        try:
+            consulta = text("select id_materia,nombre_materia,creditos from materias where id_materia = :id")
+            result = db.execute(consulta, {"id": f"{id_materia}"})
+            resultado = result.fetchall()
+            return resultado
+        finally:
+            db.close()
+
+    @staticmethod
     def ejecutar_consulta(query: str, params: dict = None):
         """
         Ejecutar una consulta SQL directa

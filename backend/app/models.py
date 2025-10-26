@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey
 from sqlalchemy.sql import func
 import sys
 from pathlib import Path
@@ -6,6 +6,18 @@ from pathlib import Path
 backend_path = Path(__file__).resolve().parent
 sys.path.append(str(backend_path))
 from databaseconfig import base as Base
+
+class EstudianteMateria(Base):
+    __tablename__ = "estudiante_materias"
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    id_estudiante = Column(String(10), ForeignKey("estudiante.id"), nullable=False)
+    id_materia = Column(Integer, ForeignKey("materias.id_materia"))
+
+class Materia(Base):
+    __tablename__ = "materias"
+    id_materia = Column(Integer, primary_key=True)
+    nombre_materia = Column(String(100))
+    creditos = Column(Integer)
 
 class BuzonSugerencias(Base):
     """Modelo para almacenar sugerencias del buzón"""

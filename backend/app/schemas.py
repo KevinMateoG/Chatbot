@@ -2,6 +2,37 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
 
+# Schema para Materia
+class MateriaBase(BaseModel):
+    id_materia: int
+    nombre_materia: str
+    creditos: int
+
+class MateriaCreate(MateriaBase):
+    pass
+
+class MateriaResponse(MateriaBase):
+    id: int
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+    
+# Schema para EstudianteMateria
+class EstudianteMateriaBase(BaseModel):
+    id_estudiante: Optional[str]
+    id_materia: Optional[int]
+
+class EstudianteMateriaCreate(EstudianteMateriaBase):
+    pass
+
+class EstudianteMateriaResponse(EstudianteMateriaBase):
+    id: int
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
 # Schema para BuzonSugerencias
 class BuzonSugerenciasBase(BaseModel):
     id_estudiante: Optional[str] = None

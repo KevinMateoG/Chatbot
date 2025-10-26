@@ -3,6 +3,119 @@ import models
 import schemas
 from typing import List, Optional
 
+# CRUD para Materia
+def crear_materia(db: Session, materia: schemas.MateriaCreate):
+    db_materia = models.Materia(**materia.dict())
+    db.add(db_materia)
+    db.commit()
+    db.refresh(db_materia)
+    return db_materia
+
+def obtener_materia(db: Session, id_materia: int):
+    """Obtener una materia por ID"""
+    return db.query(models.Materia)\
+        .filter(models.Materia.id_materia == id_materia)\
+        .first()
+
+def obtener_todas_materias(db: Session, skip: int = 0, limit: int = 100):
+    """Obtener todas las materias"""
+    return db.query(models.Materia)\
+        .offset(skip)\
+        .limit(limit)\
+        .all()
+
+# CRUD para Estudiante_Materia (Matrícula)
+def crear_estudiante_materia(db: Session, estudiante_materia: schemas.EstudianteMateriaCreate):
+    db_estudiante_materia = models.EstudianteMateria(**estudiante_materia.dict())
+    db.add(db_estudiante_materia)
+    db.commit()
+    db.refresh(db_estudiante_materia)
+    return db_estudiante_materia
+
+def obtener_materias_estudiante(db: Session, id_estudiante: int):
+    """
+    Obtener todas las materias de un estudiante con información completa
+    """
+    return db.query(models.EstudianteMateria, models.Materia)\
+        .join(models.Materia)\
+        .filter(models.EstudianteMateria.id_estudiante == id_estudiante)\
+        .all()
+
+def obtener_materias_estudiante_ordenadas(
+    db: Session, 
+    id_estudiante: int,
+    criterio: str = "creditos",
+    orden_desc: bool = True
+):
+    """
+    Obtener materias de un estudiante ordenadas según criterio
+    
+    Args:
+        db: Sesión de base de datos
+        id_estudiante: ID del estudiante
+        criterio: Campo por el cual ordenar (creditos, semestre, nombre)
+        orden_desc: True para descendente, False para ascendente
+    """
+    query = db.query(models.EstudianteMateria, models.Materia)\
+        .join(models.Materia)\
+        .filter(models.EstudianteMateria.id_estudiante == id_estudiante)
+    
+    # Aplicar ordenamiento según criterio
+    if criterio == "creditos":
+        if orden_desc:
+            query = query.order_by(models.Materia.creditos.desc())
+        else:
+            query = query.order_by(models.Materia.creditos.asc())
+    elif criterio == "semestre":
+        if orden_desc:
+            query = query.order_by(models.Materia.semestre.desc())
+        else:
+            query = query.order_by(models.Materia.semestre.asc())
+    elif criterio == "nombre":
+        if orden_desc:
+            query = query.order_by(models.Materia.nombre_materia.desc())
+        else:
+            query = query.order_by(models.Materia.nombre_materia.asc())
+    elif criterio == "estado":
+        # Ordenar por estado con prioridad personalizada
+        from sqlalchemy import case
+        estado_orden = case(
+            (models.EstudianteMateria.estado == "Cursando", 1),
+            (models.EstudianteMateria.estado == "Pendiente", 2),
+            (models.EstudianteMateria.estado == "Aprobada", 3),
+            (models.EstudianteMateria.estado == "Reprobada", 4),
+            else_=5
+        )
+        query = query.order_by(estado_orden)
+    
+    return query.all()
+
+def obtener_materias_prioritarias(db: Session, id_estudiante: int, limite: int = 5):
+    """
+    Obtener las materias más prioritarias para el estudiante
+    Ordenadas por: estado (Cursando primero) -> créditos (mayor primero) -> semestre (menor primero)
+    """
+    from sqlalchemy import case
+    
+    estado_orden = case(
+        (models.EstudianteMateria.estado == "Cursando", 1),
+        (models.EstudianteMateria.estado == "Pendiente", 2),
+        (models.EstudianteMateria.estado == "Reprobada", 3),
+        (models.EstudianteMateria.estado == "Aprobada", 4),
+        else_=5
+    )
+    
+    return db.query(models.EstudianteMateria, models.Materia)\
+        .join(models.Materia)\
+        .filter(models.EstudianteMateria.id_estudiante == id_estudiante)\
+        .order_by(
+            estado_orden,
+            models.Materia.creditos.desc(),
+            models.Materia.semestre.asc()
+        )\
+        .limit(limite)\
+        .all()
+
 # CRUD para Encuesta
 def crear_encuesta(db: Session, encuesta: schemas.EncuestaCreate):
     """Crear una nueva encuesta"""
@@ -99,3 +212,4 @@ def update_user(db: Session, user_id: int, user_update: schemas.EstudianteUpdate
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     """Obtener todos los usuarios con paginación"""
     return db.query(models.User).offset(skip).limit(limit).all()
+
