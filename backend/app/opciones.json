@@ -118,8 +118,8 @@
           "resultado": "Aquí están las FAQ más comunes."
         },
         "5": {
-          "texto": "Hablar con un agente",
-          "resultado": "Te paso contacto de agente y horarios."
+          "texto": "Pasos para matricularme en el siguiente semestre",
+          "resultado": "Sigue estos pasos para matricularte en el siguiente semestre:\n\n1️⃣ Ingresa al portal académico: https://app.udem.edu.co/ConsultasServAcadem/\n2️⃣ Revisa tu plan de estudios y verifica que no tengas materias pendientes o bloqueos.\n3️⃣ Consulta el calendario académico para conocer las fechas de matrícula: https://normasyreglamentos.udemedellin.edu.co/wp-content/uploads/2024/11/Resolucion-90-del-19-de-noviembre-de-2024-Calendario-Academico-Institucional-2025.pdf\n4️⃣ Selecciona las materias a inscribir según tu semestre y disponibilidad.\n5️⃣ Confirma la inscripción y genera la liquidación del pago.\n6️⃣ Realiza el pago dentro del plazo establecido: https://app.udem.edu.co/PagosEnLinea/\n\n✅ Una vez confirmado el pago, tu matrícula quedará activa para el nuevo semestre."
         }
       }
     },
@@ -183,14 +183,13 @@
             "libre": { "dato_clave": "descripcion" }
           },
           "resultado_sugerencia": true
-        
         }
       }
     },
     "8": {
       "texto": "Calificar profesores",
       "pregunta": "¿Que deseas hacer?",
-      "opciones":{
+      "opciones": {
         "1": {
           "texto": "ir a calificar",
           "resultado": "para calificar a tus profesores ingresa aqui: https://app.udem.edu.co/ServiciosEnLinea/login.html"
@@ -201,10 +200,13 @@
       "texto": "Tiempo restante para pagar matricula",
       "resultado": "Recordatorio Matricula: Fecha límite: 15 de febrero de 2025\n• Plataforma de pago: https://app.udem.edu.co/PagosEnLinea/\n• Evita sanciones por pago extemporáneo\n• Horario de atención en Tesorería: Lunes a viernes 8:00 am - 5:00 pm\n\n¡Realiza tu pago a tiempo para evitar inconvenientes!\n para mas informacion igresa a este link: https://admisiones.udemedellin.edu.co/calendario-admisiones/plazo-maximo-para-pagar-y-matricularse-pregrado-y-posgrado/"
     },
-    "13": {
-        "texto": "Priorizar materias por creditos",
-        "resultado": ""
+    
+    "10": {
+      "texto": "Plataforma virtual (Uvirtual)",
+      "resultado": "Accede al aula virtual institucional aquí: https://uvirtual.udemedellin.edu.co/login/index.php"},
+    
+    "11": {
+      "texto": "Priorizar materias por créditos"
     }
-
   }
 }

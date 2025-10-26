@@ -1,9 +1,10 @@
 from typing import Dict
 import sys
 from pathlib import Path
-from materia import Materia
+
 backend_path = Path(__file__).resolve().parent
 sys.path.append(str(backend_path))
+from materia import Materia
 from encuesta import *
 from controller.base_datos import *
 from model.buzon_sugerencias import BuzonSugerencia
@@ -37,8 +38,49 @@ class ChatBot:
             return self._mensaje_error("Estado no reconocido o fuera de flujo.")
 
     def _priorizar_materias(self):
-        ...
+        """Obtiene y muestra las materias priorizadas del estudiante"""
+        identificacion = self.request.identificacion
+        respuesta = self._crear_respuesta_base()
+        try:
+            # Obtener el ID del estudiante
+            id_estudiante = identificacion.get("numero")
+            
+            if not id_estudiante:
+                respuesta["mensajes"].append("No se pudo identificar tu número de documento.")
+                respuesta["nuevo_estado"] = "reiniciar"
+                respuesta["mensajes"].append("¿Deseas hacer otra consulta? Escribe 'sí' o 'no'.")
+                return respuesta
+            
+            # Obtener materias priorizadas
+            materias_priorizadas = Materia.ordenar_matrias(id_estudiante)
+            
+            if not materias_priorizadas:
+                respuesta["mensajes"].append("No tienes materias registradas en el sistema.")
+            else:
+                # Construir mensaje con las materias
+                mensaje_materias = "📚 <b>Tus materias priorizadas son:</b><br><br>"
+                
+                for materia, prioridad in materias_priorizadas.items():
+                    mensaje_materias += f"• <b>{materia.nombre_materia}</b><br>"
+                    mensaje_materias += f"  Créditos: {materia.creditos}<br>"
+                    mensaje_materias += f"  Prioridad: <b>{prioridad}</b><br><br>"
+                
+                respuesta["mensajes"].append(mensaje_materias)
+            
+            # Cambiar a estado de reiniciar
+            respuesta["nuevo_estado"] = "reiniciar"
+            respuesta["mensajes"].append("¿Deseas hacer otra consulta? Escribe 'sí' o 'no'.")
+            
+        except Exception as e:
+            print(f"Error al priorizar materias: {e}")
+            import traceback
+            traceback.print_exc()
+            respuesta["mensajes"].append("Error al obtener las materias priorizadas.")
+            respuesta["nuevo_estado"] = "reiniciar"
+            respuesta["mensajes"].append("¿Deseas intentar nuevamente? Escribe 'sí' o 'no'.")
         
+        return respuesta
+
     def _procesar_sugerencia(self):
         """Procesa las sugerencias del buzón paso a paso."""
         mensaje = self.request.mensaje.strip()
@@ -179,8 +221,14 @@ class ChatBot:
                 "¿Deseas hacer otra consulta? Escribe 'sí' o 'no'."
             ])
         else:
+            # Verificar si tiene un estado específico (como ordenar_materias)
+            if "estado" in seleccion:
+                respuesta["nuevo_estado"] = seleccion["estado"]
+                # No agregamos mensaje aquí, lo manejará el método específico
+                return respuesta
+            
             # Verificar si es una encuesta
-            if "pregunta_encuesta" in seleccion:
+            elif "pregunta_encuesta" in seleccion:
                 respuesta["nuevo_estado"] = "en_encuesta"
                 respuesta["nodo_actual"] = seleccion
                 respuesta["mensajes"].append(seleccion["pregunta_encuesta"])
