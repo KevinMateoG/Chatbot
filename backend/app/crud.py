@@ -4,9 +4,9 @@ import schemas
 from typing import List, Optional
 
 # CRUD para Encuesta
-def crear_encuesta(db: Session, survey: schemas.EncuestaCreate):
+def crear_encuesta(db: Session, encuesta: schemas.EncuestaCreate):
     """Crear una nueva encuesta"""
-    db_encuesta = models.Encuesta(**survey.dict())
+    db_encuesta = models.Encuesta(**encuesta.dict())
     db.add(db_encuesta)
     db.commit()
     db.refresh(db_encuesta)
@@ -16,11 +16,49 @@ def leer_encuesta(db: Session, survey_id: int):
     """Obtener una encuesta por ID"""
     return db.query(models.Survey).filter(models.Survey.id == survey_id).first()
 
+# CRUD para BuzonSugerencias
+def crear_sugerencia(db: Session, sugerencia: schemas.BuzonSugerenciasCreate):
+    """Crear una nueva sugerencia"""
+    db_sugerencia = models.BuzonSugerencias(**sugerencia.dict())
+    db.add(db_sugerencia)
+    db.commit()
+    db.refresh(db_sugerencia)
+    return db_sugerencia
 
-# CRUD para histotial de chat
+def obtener_sugerencia(db: Session, sugerencia_id: int):
+    """Obtener una sugerencia por ID"""
+    return db.query(models.BuzonSugerencias)\
+        .filter(models.BuzonSugerencias.id == sugerencia_id)\
+        .first()
+
+def obtener_sugerencias_por_estudiante(db: Session, id_estudiante: str):
+    """Obtener todas las sugerencias de un estudiante"""
+    return db.query(models.BuzonSugerencias)\
+        .filter(models.BuzonSugerencias.id_estudiante == id_estudiante)\
+        .order_by(models.BuzonSugerencias.created_at.desc())\
+        .all()
+
+def obtener_todas_sugerencias(db: Session, skip: int = 0, limit: int = 100):
+    """Obtener todas las sugerencias"""
+    return db.query(models.BuzonSugerencias)\
+        .order_by(models.BuzonSugerencias.created_at.desc())\
+        .offset(skip)\
+        .limit(limit)\
+        .all()
+
+def actualizar_estado_sugerencia(db: Session, sugerencia_id: int, nuevo_estado: str):
+    """Actualizar el estado de una sugerencia"""
+    sugerencia = obtener_sugerencia(db, sugerencia_id)
+    if sugerencia:
+        sugerencia.estado = nuevo_estado
+        db.commit()
+        db.refresh(sugerencia)
+    return sugerencia
+
+# CRUD para historial de chat
 def crear_historial_chat(db: Session, chat: schemas.ChatHistorialCreate):
     """Guardar historial de chat"""
-    db_chat = models.HitorialChat(**chat.dict())
+    db_chat = models.ChatHistory(**chat.dict())
     db.add(db_chat)
     db.commit()
     db.refresh(db_chat)

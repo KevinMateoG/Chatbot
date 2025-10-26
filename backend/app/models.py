@@ -7,6 +7,22 @@ backend_path = Path(__file__).resolve().parent
 sys.path.append(str(backend_path))
 from databaseconfig import base as Base
 
+class BuzonSugerencias(Base):
+    """Modelo para almacenar sugerencias del buzón"""
+    __tablename__ = "buzon_de_sugerencias"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    id_estudiante = Column(String(100), nullable=True)  # Número de documento
+    tipo_documento = Column(String(50), nullable=True)  # CC, TI, etc.
+    tipo_sugerencia = Column(String(100), nullable=True)  # Queja, Reclamo, Sugerencia, Felicitación
+    asunto = Column(String(200), nullable=True)  # El tema de la sugerencia
+    descripcion = Column(Text, nullable=False)  # La descripción detallada
+    estado = Column(String(50), default="Pendiente")  # Pendiente, En Revisión, Resuelta
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    def __repr__(self):
+        return f"<BuzonSugerencias(id={self.id}, tipo={self.tipo_sugerencia})>"
+
 class Encuesta(Base):
     """Modelo para almacenar encuestas"""
     __tablename__ = "encuesta"
@@ -19,7 +35,7 @@ class Encuesta(Base):
         return f"<Survey(id={self.id}, name={self.name})>"
 
 
-class HitorialChat(Base):
+class ChatHistory(Base):
     """Modelo para almacenar historial de conversaciones"""
     __tablename__ = "chat_history"
     

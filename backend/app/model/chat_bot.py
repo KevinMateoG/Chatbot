@@ -6,6 +6,7 @@ backend_path = Path(__file__).resolve().parent
 sys.path.append(str(backend_path))
 from encuesta import *
 from controller.base_datos import *
+from model.buzon_sugerencias import BuzonSugerencias
 
 class ChatBot:
     def __init__(self, request, opciones: Dict):
@@ -25,14 +26,89 @@ class ChatBot:
         elif estado == "en_opciones":
             return self._procesar_opciones()
         elif estado == "en_encuesta":
-            print("hola")
             return self._procesar_encuesta()
+        elif estado == "en_sugerencia":
+            return self._procesar_sugerencia()
         elif estado == "reiniciar":
             return self._reiniciar_conversacion()
         else:
             return self._mensaje_error("Estado no reconocido o fuera de flujo.")
 
+    def _procesar_sugerencia(self):
+        """Procesa las sugerencias del buzón paso a paso."""
+        mensaje = self.request.mensaje.strip()
+        nodo_actual = self.request.nodo_actual
+        identificacion = self.request.identificacion
 
+        respuesta = self._crear_respuesta_base()
+        respuestas_validas = nodo_actual.get("respuestas_sugerencia", {})
+        
+        # Inicializar datos_buzon si no existe
+        if "datos_buzon" not in identificacion:
+            identificacion["datos_buzon"] = {}
+
+        # Verificar si es un campo de texto libre (descripción)
+        if "libre" in respuestas_validas:
+            # El usuario está escribiendo la descripción
+            dato_clave = respuestas_validas["libre"].get("dato_clave")
+            identificacion["datos_buzon"][dato_clave] = mensaje
+            
+            # Verificar si hay resultado_sugerencia para guardar
+            if nodo_actual.get("resultado_sugerencia"):
+                try:
+                    # Agregar tipo_documento al diccionario
+                    datos_completos = {
+                        "tipo_documento": identificacion.get("tipo"),
+                        **identificacion["datos_buzon"]
+                    }
+                    
+                    mensaje_registro = BuzonSugerencias.procesar_sugerencia(
+                        id_estudiante=identificacion.get("numero"),
+                        datos_sugerencia=datos_completos
+                    )
+                    
+                    # Limpiar los datos temporales
+                    identificacion["datos_buzon"] = {}
+                    
+                    respuesta["nuevo_estado"] = "reiniciar"
+                    respuesta["mensajes"].extend([
+                        mensaje_registro,
+                        "¿Deseas hacer otra consulta? Escribe 'sí' o 'no'."
+                    ])
+                    return respuesta
+                except Exception as e:
+                    print(f"Error al guardar sugerencia: {e}")
+                    import traceback
+                    traceback.print_exc()
+                    respuesta["mensajes"].append(f"Error al procesar la sugerencia: {str(e)}")
+                    respuesta["mensajes"].append("¿Deseas intentar nuevamente? Escribe 'sí' o 'no'.")
+                    respuesta["nuevo_estado"] = "reiniciar"
+                    return respuesta
+        
+        # Si no es texto libre, validar selección de opciones
+        seleccion = respuestas_validas.get(mensaje)
+        
+        if not seleccion:
+            respuesta["mensajes"].append("Opción no válida. Selecciona un número de la lista.")
+            respuesta["mensajes"].append(nodo_actual.get("pregunta_sugerencia", "Por favor, selecciona una opción."))
+            respuesta["opciones"] = respuestas_validas
+            return respuesta
+
+        # Guardar la respuesta del usuario
+        dato_clave = seleccion.get("dato_clave")
+        if dato_clave:
+            identificacion["datos_buzon"][dato_clave] = seleccion["texto"]
+        
+        # Verificar si hay siguiente pregunta
+        siguiente = nodo_actual.get("siguiente")
+        if siguiente:
+            respuesta["nodo_actual"] = siguiente
+            respuesta["mensajes"].append(siguiente.get("pregunta_sugerencia", "Siguiente pregunta..."))
+            respuesta["opciones"] = siguiente.get("respuestas_sugerencia", {})
+            return respuesta
+        
+        return respuesta
+    
     def _procesar_tipo(self):
         mensaje = self.request.mensaje
         estado = self.request.estado
@@ -98,12 +174,20 @@ class ChatBot:
                 "¿Deseas hacer otra consulta? Escribe 'sí' o 'no'."
             ])
         else:
-            
+            # Verificar si es una encuesta
             if "pregunta_encuesta" in seleccion:
                 respuesta["nuevo_estado"] = "en_encuesta"
                 respuesta["nodo_actual"] = seleccion
                 respuesta["mensajes"].append(seleccion["pregunta_encuesta"])
                 respuesta["opciones"] = seleccion["respuestas_encuesta"]
+                return respuesta
+            
+            # Verificar si es una sugerencia
+            elif "pregunta_sugerencia" in seleccion:
+                respuesta["nuevo_estado"] = "en_sugerencia"
+                respuesta["nodo_actual"] = seleccion
+                respuesta["mensajes"].append(seleccion["pregunta_sugerencia"])
+                respuesta["opciones"] = seleccion["respuestas_sugerencia"]
                 return respuesta
             
             elif "pregunta" in seleccion and "opciones" in seleccion:

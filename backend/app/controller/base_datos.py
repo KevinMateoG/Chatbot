@@ -19,16 +19,6 @@ class BaseDatos:
         return session_local()
 
     @staticmethod
-    def consulta_estudiante():
-        """Consultar estudiante"""
-        db = BaseDatos.get_session()
-        try:
-            # Aquí va tu lógica de consulta
-            pass
-        finally:
-            db.close()
-
-    @staticmethod
     def buscar_id(id):
         """Buscar estudiante por ID"""
         db = BaseDatos.get_session()
@@ -40,14 +30,6 @@ class BaseDatos:
             return resultado
         finally:
             db.close()
-
-    @staticmethod
-    def obtener_cursor():
-        """
-        DEPRECADO: Usar get_session() en su lugar.
-        Este método se mantiene para compatibilidad pero usa SQLAlchemy.
-        """
-        return BaseDatos.get_session()
 
     @staticmethod
     def ejecutar_consulta(query: str, params: dict = None):

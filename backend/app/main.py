@@ -43,15 +43,20 @@ async def procesar_mensaje(request: MensajeRequest, db: Session = Depends(get_db
     
     # Guardar en el historial
     try:
+        # Asegurar que identificacion sea un diccionario
+        identificacion = request.identificacion if isinstance(request.identificacion, dict) else {}
+        
         chat_history = schemas.ChatHistorialCreate(
-            tipo_documento=request.identificacion.get("tipo"),
-            numero_documento=request.identificacion.get("numero"),
+            tipo_documento=identificacion.get("tipo") if identificacion else None,
+            numero_documento=identificacion.get("numero") if identificacion else None,
             mensaje=request.mensaje,
-            respuesta=str(respuesta.get("mensajes", [])),
+            respuesta=str(respuesta.get("mensajes", [])) if isinstance(respuesta, dict) else str(respuesta),
             estado=request.estado
         )
         crud.crear_historial_chat(db, chat_history)
     except Exception as e:
         print(f"Error guardando historial: {e}")
+        import traceback
+        traceback.print_exc()  # Esto imprimirá más detalles del error
     
     return respuesta

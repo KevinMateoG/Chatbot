@@ -2,6 +2,25 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
 
+# Schema para BuzonSugerencias
+class BuzonSugerenciasBase(BaseModel):
+    id_estudiante: Optional[str] = None
+    tipo_documento: Optional[str] = None
+    tipo_sugerencia: Optional[str] = None
+    asunto: Optional[str] = None
+    descripcion: str
+    estado: Optional[str] = "Pendiente"
+
+class BuzonSugerenciasCreate(BuzonSugerenciasBase):
+    pass
+
+class BuzonSugerenciasResponse(BuzonSugerenciasBase):
+    id: int
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
 # Schemas para Survey
 class EncuestaBase(BaseModel):
     name: Optional[str] = None
