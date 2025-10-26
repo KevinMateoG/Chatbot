@@ -6,7 +6,7 @@ backend_path = Path(__file__).resolve().parent
 sys.path.append(str(backend_path))
 from encuesta import *
 from controller.base_datos import *
-from model.buzon_sugerencias import BuzonSugerencias
+from model.buzon_sugerencias import BuzonSugerencia
 
 class ChatBot:
     def __init__(self, request, opciones: Dict):
@@ -62,7 +62,7 @@ class ChatBot:
                         **identificacion["datos_buzon"]
                     }
                     
-                    mensaje_registro = BuzonSugerencias.procesar_sugerencia(
+                    mensaje_registro = BuzonSugerencia.procesar_sugerencia(
                         id_estudiante=identificacion.get("numero"),
                         datos_sugerencia=datos_completos
                     )

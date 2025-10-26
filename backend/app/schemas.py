@@ -21,13 +21,11 @@ class BuzonSugerenciasResponse(BuzonSugerenciasBase):
     class Config:
         from_attributes = True
 
-# Schemas para Survey
+# Schemas para Encuesta
 class EncuestaBase(BaseModel):
-    name: Optional[str] = None
-    email: Optional[EmailStr] = None
-    answer1: Optional[str] = None
-    answer2: Optional[str] = None
-    answer3: Optional[str] = None
+    id_estudiante: str
+    facultad: str
+    satisfaccion: str 
 
 class EncuestaCreate(EncuestaBase):
     pass
@@ -40,7 +38,7 @@ class EncuestaResponse(EncuestaBase):
         from_attributes = True
 
 
-# Schemas para ChatHistory
+# Schemas para ChatHistorial
 class ChatHistorialBase(BaseModel):
     tipo_documento: Optional[str] = None
     numero_documento: Optional[str] = None

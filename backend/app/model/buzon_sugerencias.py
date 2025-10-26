@@ -9,7 +9,7 @@ from controller.base_datos import BaseDatos
 import crud
 import schemas
 
-class BuzonSugerencias:
+class BuzonSugerencia:
     @staticmethod
     def procesar_sugerencia(id_estudiante: str, datos_sugerencia: dict):
         """
