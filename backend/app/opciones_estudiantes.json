@@ -1,0 +1,190 @@
+{
+  "pregunta": "¿En qué puedo ayudarte? bro",
+  "opciones": {
+    "1": {
+      "texto": "Problemas con el correo",
+      "pregunta": "¿Qué problema tienes con el correo?",
+      "opciones": {
+        "1": {
+          "texto": "Restablecer contraseña",
+          "resultado": "Ingresa al siguiente enlace: https://passwordreset.microsoftonline.com/?ru=https%3a%2f%2flogin.microsoftonline.com%2fcommon%2freprocess%3fctx%3drQQIARAAhVJNiBt1HM1ktmkabTddQfy4hLCIWGcyX9lMAhGySfPVzKRJJsnMFAn_-Ur-mZnMNDP5mmXxqL3oIh5EQcSD4HopPZWePO9pvUmhUBCk7KHUnhbx4CyerfDjx3vwDo_3XiLG4CSDEx-gFE4UdvNkPq8YFIEBkjYwhiRyGJvVVIygSJLJsTndYNj5TiL59OCe_OtH49tPPnnybqr76Z_HSGri-65XyGSchW85jok7hgFVHVcdO2MDaGUeIsgpgjxDkC-j3yFtvAy7ZrvS2EhCcyJtCIIL-GlL6AS8IPltYTLhIZHlhA7TrpiBNB1A2eZ6zUoTSraUDbVmSxiTPHXT5yudDb8hISc07ZagQS6omtxQIrgat5a6DgR2NVDrTVeprSf8lMt26vxSFwemPCQtuTbwlJq1aNkDU-tlp8qm7JY6xeJxdJcIgyCpbA6jjDzAcqxKYopmaJhKG0oeAIohGOZxdLtdWvgT6uI5cxjoL6NxYw7Gtj7zv0FdfdN05XJjrzEtrduCueamfboV2gyxzwf7FrchJ5LAbVpCfyVXuEASGjQXaLbca3gNm7S02k3YnnkQDLOELIYx0V1XobJ9Xdy3GlMHqqFtIDYtie5AQySKx-g7_13CA_SqMx-DGQyAD52Z9wjdJQjGMFSQx_KsTmJ7OYrFGJqlMUPRVJViGIpm6BO09IpicU03wMLyU46rz6CWcueOAS09FUosONNHQFV1z_sNRU63kLOtN-NbyWtvRVKR998j0EI8nkhGLtj5FvLDpXBTPx_hf3z1bXP_p2c7697bn0dOLmXUFvQaHE1X6YGyqvZNUym5e5xsrJZ6U71r133Lr7QbM3HPXBWpAnkUQ45ibzyIXYmjyUgaLd8mT2LbtgcsfOrhytxZefr8RQz57HLk0ZX_3evXCeQ4cYNnS0uqPJyT1swajcVqOJjlwFk6w-Xo1gDYri-BHgBlnhDZ-wnk9DXk8etsIqZaANreDn6Q_jeBke-Y-ixdOEivbW-kqhdoCayF7qULd9Khz_THh4eHv1yNnF_7_e97X_x49tfz-tn2hyXlViu4K98g-mK3N1GWgS-uVpyUIRwo1sc1d80pvjboyLmuWbyfjDwN73rk_Pr30X8A0&mkt=es-419&hosted=0&device_platform=Windows+10"
+        },
+        "2": {
+          "texto": "No llega correo",
+          "resultado": "Revisa filtros, carpeta de SPAM y almacenamiento."
+        },
+        "3": {
+          "texto": "Correo llega a SPAM",
+          "resultado": "Marca como 'No es spam' y agrega remitente a contactos."
+        },
+        "4": {
+          "texto": "Otro",
+          "resultado": "Contacta soporte técnico indicando usuario y descripción del problema."
+        }
+      }
+    },
+    "2": {
+      "texto": "Eventos",
+      "pregunta": "¿Qué deseas consultar sobre eventos?",
+      "opciones": {
+        "1": {
+          "texto": "Eventos de la semana",
+          "resultado": "Aquí Puedes ver todos los eventos: https://udemedellin.edu.co/eventos/."
+        },
+        "2": {
+          "texto": "Eventos por día",
+          "resultado": "Aquí Puedes ver todos los eventos: https://udemedellin.edu.co/eventos/."
+        },
+        "3": {
+          "texto": "Inscribirme a evento",
+          "resultado": "Haz clic en 'Inscribirme' en el evento y confirma. https://udemedellin.edu.co/eventos/"
+        },
+        "4": {
+          "texto": "Otro",
+          "resultado": "Especifica tu duda sobre eventos."
+        }
+      }
+    },
+    "3": {
+      "texto": "Materias",
+      "pregunta": "¿Qué deseas consultar sobre materias?",
+      "opciones": {
+        "1": {
+          "texto": "Listado de materias",
+          "resultado": "Aquí está el catálogo de materias por semestre. https://app.udem.edu.co/ConsultasServAcadem/asignaturasMat/cargarPaginaAsignaturas.do"
+        },
+        "2": {
+          "texto": "Prerrequisitos",
+          "resultado": "Indica el código o nombre de la materia para mostrar prerrequisitos. "
+        },
+        "3": {
+          "texto": "Horarios y salones",
+          "resultado": "Consulta horarios y salones asignados: https://app.udem.edu.co/ConsultasServAcadem/asignaturasMat/cargarPaginaHorariosPre.do"
+        },
+        "4": {
+          "texto": "Inscripción/matrícula",
+          "resultado": "Información sobre fechas y pasos de matrícula: https://normasyreglamentos.udemedellin.edu.co/wp-content/uploads/2024/11/Resolucion-90-del-19-de-noviembre-de-2024-Calendario-Academico-Institucional-2025.pdf"
+        },
+        "5": {
+          "texto": "Otro",
+          "resultado": "Especifica tu duda sobre materias."
+        }
+      }
+    },
+    "4": {
+      "texto": "Trámites administrativos",
+      "pregunta": "¿Qué trámite necesitas?",
+      "opciones": {
+        "1": {
+          "texto": "Certificados",
+          "resultado": "Solicitud de certificados académicos en la plataforma."
+        },
+        "2": {
+          "texto": "Pagos y facturación",
+          "resultado": "Consulta estado de pagos y facturas: https://app.udem.edu.co/PagosEnLinea/"
+        },
+        "3": {
+          "texto": "Solicitudes académicas",
+          "resultado": "Cambio de jornada, homologaciones, permisos."
+        },
+        "4": {
+          "texto": "Secretaría",
+          "resultado": "Teléfono/correo y horarios de secretaría."
+        },
+        "5": {
+          "texto": "Otro",
+          "resultado": "Especifica el trámite que necesitas."
+        }
+      }
+    },
+    "5": {
+      "texto": "Otro / Soporte general",
+      "pregunta": "Selecciona la categoría que más se acerque",
+      "opciones": {
+        "1": {
+          "texto": "Plataforma virtual",
+          "resultado": "Problemas con acceso y entregas en LMS."
+        },
+        "2": {
+          "texto": "Acceso a red / VPN",
+          "resultado": "Guía de conexión VPN institucional."
+        },
+        "3": {
+          "texto": "Reportar fallo",
+          "resultado": "Se generará un ticket con descripción y pantallazo."
+        },
+        "4": {
+          "texto": "Preguntas frecuentes",
+          "resultado": "Aquí están las FAQ más comunes."
+        },
+        "5": {
+          "texto": "Hablar con un agente",
+          "resultado": "Te paso contacto de agente y horarios."
+        }
+      }
+    },
+    "6": {
+      "texto": "Encuesta de satisfacción",
+      "pregunta": "Por favor, responde la siguiente pregunta:",
+      "opciones": {
+        "1": {
+          "texto": "Comenzar Encuesta",
+          "pregunta_encuesta": "¿A qué facultad perteneces? (Responde con el número)",
+          "respuestas_encuesta": {
+            "1": { "texto": "Ingeniería", "dato_clave": "Facultad" },
+            "2": { "texto": "Diseño", "dato_clave": "Facultad" },
+            "3": { "texto": "Comunicación", "dato_clave": "Facultad" },
+            "4": { "texto": "Ciencias Básicas", "dato_clave": "Facultad" }
+          },
+          "siguiente": {
+            "pregunta_encuesta": "¿Qué tan satisfecho estás con la atención recibida? (Responde del 1 al 5, siendo 5 muy satisfecho)",
+            "respuestas_encuesta": {
+              "1": {
+                "texto": "1 (Muy Insatisfecho)",
+                "dato_clave": "Satisfaccion"
+              },
+              "2": {
+                "texto": "2 (Insatisfecho)",
+                "dato_clave": "Satisfaccion"
+              },
+              "3": { "texto": "3 (Neutral)", "dato_clave": "Satisfaccion" },
+              "4": { "texto": "4 (Satisfecho)", "dato_clave": "Satisfaccion" },
+              "5": {
+                "texto": "5 (Muy Satisfecho)",
+                "dato_clave": "Satisfaccion"
+              }
+            },
+            "resultado_encuesta": true
+          }
+        }
+      }
+    },
+    "7": {
+      "texto": "Buzón de sugerencias",
+      "pregunta_sugerencia": "¿Qué tipo de sugerencia deseas enviar?",
+      "respuestas_sugerencia": {
+        "1": { "texto": "Queja", "dato_clave": "tipo_sugerencia" },
+        "2": { "texto": "Reclamo", "dato_clave": "tipo_sugerencia" },
+        "3": { "texto": "Sugerencia", "dato_clave": "tipo_sugerencia" },
+        "4": { "texto": "Felicitación", "dato_clave": "tipo_sugerencia" }
+      },
+      "siguiente": {
+        "pregunta_sugerencia": "¿Cuál es el asunto de tu mensaje?",
+        "respuestas_sugerencia": {
+          "1": { "texto": "Servicio académico", "dato_clave": "asunto" },
+          "2": { "texto": "Plataforma virtual", "dato_clave": "asunto" },
+          "3": { "texto": "Instalaciones", "dato_clave": "asunto" },
+          "4": { "texto": "Atención administrativa", "dato_clave": "asunto" },
+          "5": { "texto": "Otro", "dato_clave": "asunto" }
+        },
+        "siguiente": {
+          "pregunta_sugerencia": "Por favor, escribe tu mensaje detallado (escribe directamente, no números):",
+          "respuestas_sugerencia": {
+            "libre": { "dato_clave": "descripcion" }
+          },
+          "resultado_sugerencia": true
+        }
+      }
+    }
+  }
+}

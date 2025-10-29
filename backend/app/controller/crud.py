@@ -1,14 +1,5 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from pathlib import Path
-import sys
-
-from controller import models
-from controller import schemas
-"""sys.path.append(str(Path(__file__).resolve().parent))
-
-#import models
-import schemas"""
 
 # CRUD para Materia
 def crear_materia(db: Session, materia: schemas.MateriaCreate):
