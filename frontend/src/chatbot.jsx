@@ -15,7 +15,7 @@ function Chatbot() {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [estado, setEstado] = useState("pidiendo_tipo");
-  const [identificacion, setIdentificacion] = useState("");
+  const [identificacion, setIdentificacion] = useState({});
   const [opciones, setOpciones] = useState(null);
   const [nodoActual, setNodoActual] = useState(null);
   const [modoIA, setModoIA] = useState(false);
@@ -80,6 +80,9 @@ function Chatbot() {
   const consultarIA = async (pregunta) => {
     setCargandoIA(true);
     try {
+      // Convertir identificacion (objeto) a string para la IA
+      const identificacionStr = identificacion?.numero || null;
+
       const response = await fetch("http://localhost:8000/ai/generate", {
         method: "POST",
         headers: {
@@ -89,10 +92,7 @@ function Chatbot() {
           prompt: pregunta,
           max_tokens: 512,
           temperature: 0.7,
-          identificacion:
-            identificacion && identificacion.trim() !== ""
-              ? identificacion
-              : null, // Enviar null si está vacío
+          identificacion: identificacionStr, // Enviar el número de documento o null
           usar_contexto: true, // Habilitar el uso de contexto del sistema
         }),
       });
