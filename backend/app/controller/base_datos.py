@@ -16,35 +16,40 @@ class BaseDatos:
         return session_local()
 
     @staticmethod
-    def buscar_id(id):
+    def buscar_id(id: int):
         """Buscar estudiante por ID"""
         db = BaseDatos.get_session()
         try:
-            # Usando SQL directo con SQLAlchemy
-            consulta = text("SELECT nombre FROM estudiante WHERE id LIKE :id")
-            result = db.execute(consulta, {"id": f"{id}"})
+            # Buscar en usuarios, sigue igual
+            consulta = text("SELECT nombre FROM usuarios WHERE id = :id")
+            result = db.execute(consulta, {"id": id})
             resultado = result.fetchone()
-            return resultado
+            if resultado:
+                return resultado[0]
+            return None
         finally:
             db.close()
 
     @staticmethod
-    def buscar_materias_de_estudiante(id):
+    def buscar_materias_de_estudiante(id: int):
+        """Buscar todas las materias de un estudiante"""
         db = BaseDatos.get_session()
         try:
-            consulta = text("select id_materia from estudiante_materias where id_estudiante like :id")
-            result = db.execute(consulta, {"id": f"{id}"})
+            # Cambié 'like' por '=' y aseguré que el tipo sea integer
+            consulta = text("SELECT id_materia FROM estudiante_materias WHERE id_estudiante = :id")
+            result = db.execute(consulta, {"id": id})
             resultado = result.fetchall()
             return resultado
         finally:
             db.close()
 
     @staticmethod
-    def buscar_materias_por_id(id_materia):
+    def buscar_materias_por_id(id_materia: int):
+        """Buscar información de una materia por su ID"""
         db = BaseDatos.get_session()
         try:
-            consulta = text("select id_materia,nombre_materia,creditos from materias where id_materia = :id")
-            result = db.execute(consulta, {"id": f"{id_materia}"})
+            consulta = text("SELECT id_materia, nombre_materia, creditos FROM materias WHERE id_materia = :id")
+            result = db.execute(consulta, {"id": id_materia})
             resultado = result.fetchall()
             return resultado
         finally:
@@ -52,16 +57,7 @@ class BaseDatos:
 
     @staticmethod
     def ejecutar_consulta(query: str, params: dict = None):
-        """
-        Ejecutar una consulta SQL directa
-        
-        Args:
-            query: Consulta SQL (usar :param para parámetros)
-            params: Diccionario con los parámetros
-        
-        Returns:
-            Resultados de la consulta
-        """
+        """Ejecutar cualquier consulta SQL"""
         db = BaseDatos.get_session()
         try:
             consulta = text(query)
@@ -79,16 +75,7 @@ class BaseDatos:
 
     @staticmethod
     def ejecutar_insert(query: str, params: dict = None):
-        """
-        Ejecutar un INSERT/UPDATE/DELETE
-        
-        Args:
-            query: Consulta SQL
-            params: Diccionario con los parámetros
-        
-        Returns:
-            True si se ejecutó correctamente
-        """
+        """Ejecutar un INSERT/UPDATE/DELETE"""
         db = BaseDatos.get_session()
         try:
             consulta = text(query)
@@ -103,3 +90,18 @@ class BaseDatos:
             raise e
         finally:
             db.close()
+
+    @staticmethod
+    def obtener_link_hoja(id: int) -> str | None:
+        """Retorna el link de la hoja de calificaciones para un usuario"""
+        session = BaseDatos.get_session()
+        try:
+            resultado = session.execute(
+                text("SELECT link_hoja FROM profesores WHERE id = :id"),
+                {"id": id}
+            ).fetchone()
+            if resultado:
+                return resultado[0]
+            return None
+        finally:
+            session.close()

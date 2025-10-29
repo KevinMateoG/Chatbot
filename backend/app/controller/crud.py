@@ -1,5 +1,18 @@
 from sqlalchemy.orm import Session
+from controller import models
+import schemas
 from typing import List, Optional
+from pathlib import Path
+from sqlalchemy import text
+from controller.base_datos import BaseDatos
+import sys
+
+from controller import models
+from controller import schemas
+"""sys.path.append(str(Path(__file__).resolve().parent))
+
+#import models
+import schemas"""
 
 # CRUD para Materia
 def crear_materia(db: Session, materia: schemas.MateriaCreate):
@@ -211,3 +224,36 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
     """Obtener todos los usuarios con paginación"""
     return db.query(models.User).offset(skip).limit(limit).all()
 
+def get_usuario_por_documento(db: Session, tipo_id: str, id: str):
+    """Obtener usuario por documento"""
+    return db.query(models.Usuario).filter(
+        models.Usuario.tipo_id == tipo_id,
+        models.Usuario.id == id
+    ).first()
+
+
+def obtener_link_hoja(profesor_id: int):
+    """
+    Retorna el link de la hoja de calificaciones del profesor según su ID.
+    """
+    db = BaseDatos.get_session()
+    try:
+        consulta = text("SELECT link_hoja FROM profesores WHERE id = :id")
+        result = db.execute(consulta, {"id": profesor_id})
+        row = result.fetchone()
+        if row and row[0]:
+            return row[0]
+        return None  # Si no hay link asignado
+    finally:
+        db.close()
+
+def get_users(db: Session, skip: int = 0, limit: int = 100):
+    """Obtener todos los usuarios con paginación"""
+    return db.query(models.User).offset(skip).limit(limit).all()
+
+def get_usuario_por_documento(db: Session, tipo_id: str, id: str):
+    """Obtener usuario por documento"""
+    return db.query(models.Usuario).filter(
+        models.Usuario.tipo_id == tipo_id,
+        models.Usuario.id == id
+    ).first()
