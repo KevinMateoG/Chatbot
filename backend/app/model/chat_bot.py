@@ -213,48 +213,65 @@ class ChatBot:
             return self._mensaje_error("Estructura de nodo inválida.")
 
         seleccion = nodo_actual["opciones"].get(mensaje)
-        
+        if not seleccion:
+            respuesta["mensajes"].append("Opción no válida. Selecciona un número de la lista.")
+            respuesta["mensajes"].append(nodo_actual.get("pregunta", "Por favor, selecciona una opción."))
+            respuesta["opciones"] = nodo_actual.get("opciones", {})
+            return respuesta
+
+        # Si la opción tiene un resultado directo
         if "resultado" in seleccion:
             respuesta["nuevo_estado"] = "reiniciar"
+            mensaje_resultado = seleccion["resultado"]
+
+            # Reemplazar {link_hoja} si existe en el mensaje
+            if "{link_hoja}" in mensaje_resultado:
+                usuario_id = identificacion.get("numero")
+                link_hoja = BaseDatos.obtener_link_hoja(usuario_id)
+                if link_hoja:
+                    mensaje_resultado = mensaje_resultado.replace("{link_hoja}", link_hoja)
+                else:
+                    mensaje_resultado = "No hay hoja de calificaciones asignada para tu usuario."
+
             respuesta["mensajes"].extend([
-                seleccion["resultado"],
+                mensaje_resultado,
                 "¿Deseas hacer otra consulta? Escribe 'sí' o 'no'."
             ])
-        else:
-            # Verificar si tiene un estado específico (como ordenar_materias)
-            if "estado" in seleccion:
-                estado = seleccion["estado"]
-                if estado == "ordenar_materias":
-                    return self._priorizar_materias()
-                else:
-                    # Para otros estados futuros
-                    respuesta["nuevo_estado"] = estado
-                    return respuesta
-            
-            # Verificar si es una encuesta
-            elif "pregunta_encuesta" in seleccion:
-                respuesta["nuevo_estado"] = "en_encuesta"
-                respuesta["nodo_actual"] = seleccion
-                respuesta["mensajes"].append(seleccion["pregunta_encuesta"])
-                respuesta["opciones"] = seleccion["respuestas_encuesta"]
-                return respuesta
-            
-            # Verificar si es una sugerencia
-            elif "pregunta_sugerencia" in seleccion:
-                respuesta["nuevo_estado"] = "en_sugerencia"
-                respuesta["nodo_actual"] = seleccion
-                respuesta["mensajes"].append(seleccion["pregunta_sugerencia"])
-                respuesta["opciones"] = seleccion["respuestas_sugerencia"]
-                return respuesta
-            
-            elif "pregunta" in seleccion and "opciones" in seleccion:
-                respuesta["nodo_actual"] = seleccion
-                respuesta["mensajes"].append(seleccion["pregunta"])
-                respuesta["opciones"] = seleccion["opciones"]
-            else:
-                return self._mensaje_error("Error en la estructura del flujo de opciones.")
+            return respuesta
 
-        return respuesta
+        # Verificar si tiene un estado específico (como ordenar_materias)
+        if "estado" in seleccion:
+            estado = seleccion["estado"]
+            if estado == "ordenar_materias":
+                return self._priorizar_materias()
+            else:
+                respuesta["nuevo_estado"] = estado
+                return respuesta
+
+        # Verificar si es una encuesta
+        if "pregunta_encuesta" in seleccion:
+            respuesta["nuevo_estado"] = "en_encuesta"
+            respuesta["nodo_actual"] = seleccion
+            respuesta["mensajes"].append(seleccion["pregunta_encuesta"])
+            respuesta["opciones"] = seleccion.get("respuestas_encuesta", {})
+            return respuesta
+
+        # Verificar si es una sugerencia
+        if "pregunta_sugerencia" in seleccion:
+            respuesta["nuevo_estado"] = "en_sugerencia"
+            respuesta["nodo_actual"] = seleccion
+            respuesta["mensajes"].append(seleccion["pregunta_sugerencia"])
+            respuesta["opciones"] = seleccion.get("respuestas_sugerencia", {})
+            return respuesta
+
+        # Si tiene sub-opciones normales
+        if "pregunta" in seleccion and "opciones" in seleccion:
+            respuesta["nodo_actual"] = seleccion
+            respuesta["mensajes"].append(seleccion["pregunta"])
+            respuesta["opciones"] = seleccion["opciones"]
+            return respuesta
+
+        return self._mensaje_error("Error en la estructura del flujo de opciones.")
 
     def _procesar_encuesta(self):
         mensaje = self.request.mensaje.strip()
