@@ -9,12 +9,14 @@ from databaseconfig import base as Base
 
 class EstudianteMateria(Base):
     __tablename__ = "estudiante_materias"
+    
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     id_estudiante = Column(String(10), ForeignKey("estudiante.id"), nullable=False)
     id_materia = Column(Integer, ForeignKey("materias.id_materia"))
 
 class Materia(Base):
     __tablename__ = "materias"
+    
     id_materia = Column(Integer, primary_key=True)
     nombre_materia = Column(String(100))
     creditos = Column(Integer)
@@ -38,6 +40,7 @@ class BuzonSugerencias(Base):
 class Encuesta(Base):
     """Modelo para almacenar encuestas"""
     __tablename__ = "encuesta"
+    
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_estudiante = Column(String(30), index=True)
     facultad = Column(String(20), nullable=True)

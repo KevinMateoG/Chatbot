@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from pathlib import Path
 import sys
 # Agregar el directorio raíz del backend al PATH
-backend_path = Path(__file__).resolve().parent.parent
+backend_path = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(backend_path))
 
 import secretconfig as sc

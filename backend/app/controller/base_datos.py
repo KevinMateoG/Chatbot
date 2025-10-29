@@ -3,13 +3,10 @@ from sqlalchemy import text
 import sys
 from pathlib import Path
 
-# Agregar el directorio raíz del backend al PATH
-backend_path = Path(__file__).resolve().parent.parent.parent
-sys.path.append(str(backend_path))
-
 # Importar la configuración de base de datos
-sys.path.append(str(Path(__file__).resolve().parent.parent))
-from databaseconfig import session_local, engine
+#sys.path.append(str(Path(__file__).resolve().parent.parent))
+from .databaseconfig import session_local, engine
+
 
 class BaseDatos:
 

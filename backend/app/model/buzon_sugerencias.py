@@ -6,8 +6,8 @@ backend_path = Path(__file__).resolve().parent.parent
 sys.path.append(str(backend_path))
 
 from controller.base_datos import BaseDatos
-import crud
-import schemas
+from controller import crud
+from controller import schemas
 
 class BuzonSugerencia:
     @staticmethod

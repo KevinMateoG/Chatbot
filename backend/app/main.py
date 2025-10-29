@@ -5,13 +5,13 @@ import json
 from model.chat_bot import *
 from sqlalchemy.orm import Session
 from typing import List
-import models, schemas, crud
+from controller import models, schemas, crud
 
 from pathlib import Path
 
 backend_path = Path(__file__).resolve().parent
 sys.path.append(str(backend_path))
-from databaseconfig import engine, get_db
+from controller.databaseconfig import engine, get_db
 
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
@@ -23,6 +23,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Router para integración con Gemini (AI)
+from ai_router import router as ai_router
+app.include_router(ai_router)
 
 with open('opciones.json') as f:
     OPCIONES = json.load(f)

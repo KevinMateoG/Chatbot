@@ -6,7 +6,7 @@ from abc import ABC
 
 ruta = Path(__file__).resolve().parent.parent
 sys.path.append(str(ruta))
-import schemas
+from controller import schemas
 from controller.base_datos import BaseDatos
 
 class Materia(ABC):
