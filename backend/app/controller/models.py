@@ -1,3 +1,4 @@
+from sqlalchemy.orm import Session
 from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey
 from sqlalchemy.sql import func
 import sys
@@ -78,3 +79,16 @@ class Estudiante(Base):
     
     def __repr__(self):
         return f"<User(id={self.nombre}, documento={self.tipo_id} {self.id})>"
+
+class Usuario(Base):
+    """Modelo para almacenar usuarios"""
+    __tablename__ = "usuarios"  # <-- doble guión bajo
+    
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(100))
+    apellidos = Column(String(100))
+    rol = Column(String(20))
+    tipo_id = Column(String(20))
+
+    def __repr__(self):  # <-- doble guión bajo
+        return f"<Usuario(id={self.id}, nombre={self.nombre}, tipo_id={self.tipo_id})>"
