@@ -25,7 +25,7 @@ class BaseDatos:
             result = db.execute(consulta, {"id": id})
             resultado = result.fetchone()
             if resultado:
-                return resultado[0]
+                return resultado
             return None
         finally:
             db.close()

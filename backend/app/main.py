@@ -8,6 +8,7 @@ from typing import List
 from controller import models, schemas, crud
 from controller.databaseconfig import engine, get_db
 from pathlib import Path
+from ai_router import router as ai_router
 
 
 
@@ -21,6 +22,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Registrar el router de IA
+app.include_router(ai_router)
 
 with open('opciones.json', encoding='utf-8') as f:
     OPCIONES = json.load(f)
