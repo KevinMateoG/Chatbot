@@ -1,34 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./chatbot.css";
 import logoUdem from "../public/logo_udemedellin2.png";
 
 function Chatbot() {
   const [messages, setMessages] = useState([
     {
-      text: "Bienvenido al asistente de Uvirtual, aquí resolveremos tus dudas de tu interés.",
+      text: "🎓 Bienvenido al Asistente Virtual Inteligente de la Universidad de Medellín",
       type: "bot",
     },
     {
-      text: "Por favor ingresa tu tipo de documento de identidad",
+      text: "Soy tu asistente con IA y puedo ayudarte con información sobre materias, profesores, notas, eventos y más.",
+      type: "bot",
+    },
+    {
+      text: "Para brindarte información personalizada, por favor ingresa tu número de identificación (opcional, presiona Enter para omitir):",
       type: "bot",
     },
   ]);
   const [inputValue, setInputValue] = useState("");
-  const [estado, setEstado] = useState("pidiendo_tipo");
-  const [identificacion, setIdentificacion] = useState({});
-  const [opciones, setOpciones] = useState(null);
-  const [nodoActual, setNodoActual] = useState(null);
-  const [modoIA, setModoIA] = useState(false);
+  const [identificacion, setIdentificacion] = useState(null);
+  const [nombreUsuario, setNombreUsuario] = useState(null);
+  const [esperandoIdentificacion, setEsperandoIdentificacion] = useState(true);
   const [cargandoIA, setCargandoIA] = useState(false);
-
-  useEffect(() => {
-    // Cargar opciones desde el backend de FastAPI
-    fetch("http://localhost:8000/opciones")
-      .then((res) => res.json())
-      .then((data) => {
-        setOpciones(data);
-      });
-  }, []);
 
   const mostrarMensaje = (texto, tipo) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -39,50 +32,22 @@ function Chatbot() {
     setMessages((prev) => [...prev, { text: textoConLinks, type: tipo }]);
   };
 
-  const mostrarOpciones = (opcionesObj) => {
-    const opcionesTexto = Object.entries(opcionesObj)
-      .map(([k, v]) => `${k}. ${v.texto}`)
-      .join("\n");
-    mostrarMensaje(opcionesTexto, "bot");
-  };
-
-  const procesarFlujo = async (mensaje) => {
-    const response = await fetch("http://localhost:8000/procesar_mensaje", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        mensaje,
-        estado,
-        identificacion,
-        nodo_actual: nodoActual,
-      }),
-    });
-
-    const data = await response.json();
-
-    // Actualizar estado según la respuesta del backend
-    setEstado(data.nuevo_estado);
-    setIdentificacion(data.identificacion);
-    setNodoActual(data.nodo_actual);
-
-    // Mostrar mensajes de respuesta
-    data.mensajes.forEach((msg) => {
-      mostrarMensaje(msg, "bot");
-    });
-
-    if (data.opciones) {
-      mostrarOpciones(data.opciones);
+  const verificarIdentificacion = async (id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/ai/verificar_identificacion/${id}`
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error verificando identificación:", error);
+      return { encontrado: false };
     }
   };
 
   const consultarIA = async (pregunta) => {
     setCargandoIA(true);
     try {
-      // Convertir identificacion (objeto) a string para la IA
-      const identificacionStr = identificacion?.numero || null;
-
       const response = await fetch("http://localhost:8000/ai/generate", {
         method: "POST",
         headers: {
@@ -90,10 +55,10 @@ function Chatbot() {
         },
         body: JSON.stringify({
           prompt: pregunta,
-          max_tokens: 512,
+          max_tokens: 800,
           temperature: 0.7,
-          identificacion: identificacionStr, // Enviar el número de documento o null
-          usar_contexto: true, // Habilitar el uso de contexto del sistema
+          identificacion: identificacion, // Enviar la identificación si existe
+          usar_contexto: true, // Siempre usar contexto
         }),
       });
 
@@ -112,11 +77,7 @@ function Chatbot() {
       }
 
       if (data.text) {
-        // Mostrar si usó contexto
-        const contextoInfo = data.contexto_usado
-          ? " (con contexto del sistema)"
-          : "";
-        mostrarMensaje(`🤖 IA${contextoInfo}: ${data.text}`, "bot");
+        mostrarMensaje(`🤖 ${data.text}`, "bot");
       } else if (data.detail) {
         mostrarMensaje(`❌ Error: ${data.detail}`, "bot");
       }
@@ -128,39 +89,50 @@ function Chatbot() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
 
     mostrarMensaje(inputValue, "user");
 
-    // Si está en modo IA, consultar directamente a la IA
-    if (modoIA) {
-      consultarIA(inputValue);
-    } else {
-      procesarFlujo(inputValue);
+    // Si está esperando identificación
+    if (esperandoIdentificacion) {
+      const id = inputValue.trim();
+      if (id === "") {
+        // Usuario no quiere dar identificación
+        mostrarMensaje(
+          "✅ Perfecto, continuemos sin identificación. ¿En qué puedo ayudarte?",
+          "bot"
+        );
+        setEsperandoIdentificacion(false);
+      } else {
+        // Verificar identificación en la base de datos
+        mostrarMensaje("🔍 Verificando identificación...", "bot");
+        const resultado = await verificarIdentificacion(id);
+
+        if (resultado.encontrado) {
+          // Guardar identificación y nombre
+          setIdentificacion(id);
+          setNombreUsuario(resultado.nombre);
+          mostrarMensaje(
+            `✅ ¡Bienvenid@ ${resultado.nombre}! 👋\n\nTipo de usuario: ${resultado.tipo}\n\nAhora puedo darte información personalizada. ¿En qué puedo ayudarte?`,
+            "bot"
+          );
+        } else {
+          mostrarMensaje(
+            `⚠️ No encontré la identificación "${id}" en el sistema.\n\nPuedes continuar sin identificación o intentar con otro número. ¿En qué puedo ayudarte?`,
+            "bot"
+          );
+        }
+        setEsperandoIdentificacion(false);
+      }
+      setInputValue("");
+      return;
     }
 
+    // Consultar IA
+    consultarIA(inputValue);
     setInputValue("");
-  };
-
-  const toggleModoIA = () => {
-    setModoIA(!modoIA);
-    if (!modoIA) {
-      mostrarMensaje(
-        "🤖 Modo IA activado. Ahora puedes hacer cualquier pregunta y la IA responderá.",
-        "bot"
-      );
-    } else {
-      mostrarMensaje(
-        "📋 Modo normal activado. Continuando con el flujo del chatbot.",
-        "bot"
-      );
-    }
-  };
-
-  const refrescarPagina = () => {
-    window.location.reload(false);
   };
 
   return (
@@ -170,6 +142,24 @@ function Chatbot() {
           <a href="/">↶</a>
         </button>
         <img src={logoUdem} alt="logo udem" height="70" />
+        {nombreUsuario && (
+          <div
+            style={{
+              position: "absolute",
+              right: "20px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "#4CAF50",
+              color: "white",
+              padding: "8px 15px",
+              borderRadius: "20px",
+              fontSize: "14px",
+              fontWeight: "bold",
+            }}
+          >
+            👤 {nombreUsuario}
+          </div>
+        )}
       </div>
 
       <div className="chat-container">
@@ -185,23 +175,11 @@ function Chatbot() {
 
         <div className="input-container">
           <center>
-            <div style={{ marginBottom: "10px" }}>
-              <button
-                onClick={toggleModoIA}
-                style={{
-                  padding: "8px 16px",
-                  backgroundColor: modoIA ? "#4CAF50" : "#2196F3",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                  fontSize: "14px",
-                }}
-              >
-                {modoIA ? "🤖 Modo IA Activo" : "📋 Modo Normal"}{" "}
-                {cargandoIA ? "⏳" : ""}
-              </button>
-            </div>
+            {cargandoIA && (
+              <div style={{ marginBottom: "10px", color: "#4CAF50" }}>
+                🤖 Pensando... ⏳
+              </div>
+            )}
             <form onSubmit={handleSubmit}>
               <input
                 className="barra"
@@ -209,7 +187,9 @@ function Chatbot() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder={
-                  modoIA ? "Pregunta a la IA..." : "Escribe tu mensaje..."
+                  esperandoIdentificacion
+                    ? "Número de identificación (o Enter para omitir)"
+                    : "Escribe tu pregunta..."
                 }
                 disabled={cargandoIA}
               />
@@ -218,10 +198,10 @@ function Chatbot() {
               </button>
               <button
                 className="flechita"
-                onClick={refrescarPagina}
+                onClick={() => window.location.reload()}
                 type="button"
               >
-                Limpiar
+                🔄
               </button>
             </form>
           </center>
