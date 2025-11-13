@@ -6,8 +6,10 @@ from typing import Optional
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from controller.databaseconfig import get_db
-from controller import models
+from controller import models, schemas, crud
 from pydantic import BaseModel, Field
+from model.materia import Materia as MateriaLogica
+from model.buzon_sugerencias import BuzonSugerencia
 
 # Cargar variables de entorno desde .env
 load_dotenv()
@@ -16,7 +18,7 @@ router = APIRouter(prefix="/ai", tags=["ai"])
 logger = logging.getLogger(__name__)
 
 
-# Modelo Pydantic para el request
+# Modelos Pydantic para los requests
 class AIGenerateRequest(BaseModel):
     prompt: str = Field(..., description="Texto del prompt")
     model: Optional[str] = Field(None, description="Modelo a usar (opcional)")
@@ -75,25 +77,22 @@ def _obtener_contexto_bd(db: Session, identificacion: str = None):
     try:
         # ============ INFORMACIÓN DEL USUARIO ============
         if identificacion:
-            # Buscar primero como estudiante
+            # Buscar primero como estudiante (el id es la identificación)
             estudiante = db.query(models.Estudiante).filter(
-                models.Estudiante.identificacion == identificacion
+                models.Estudiante.id == identificacion
             ).first()
             
             if estudiante:
                 contexto.append("=" * 50)
                 contexto.append("INFORMACIÓN DEL ESTUDIANTE")
                 contexto.append("=" * 50)
-                contexto.append(f"Nombre completo: {estudiante.nombre} {estudiante.apellido}")
-                contexto.append(f"Identificación: {estudiante.identificacion}")
-                contexto.append(f"Correo: {estudiante.correo}")
-                contexto.append(f"Programa académico: {estudiante.programa}")
-                contexto.append(f"Semestre actual: {estudiante.semestre}")
-                contexto.append(f"Estado: {estudiante.estado}")
+                contexto.append(f"Nombre completo: {estudiante.nombre} {estudiante.apellidos}")
+                contexto.append(f"Identificación: {estudiante.id}")
+                contexto.append(f"Tipo de documento: {estudiante.tipo_id}")
                 
                 # Materias matriculadas con todos los detalles
                 materias = db.query(models.EstudianteMateria, models.Materia).join(
-                    models.Materia, models.EstudianteMateria.id_materia == models.Materia.id
+                    models.Materia, models.EstudianteMateria.id_materia == models.Materia.id_materia
                 ).filter(
                     models.EstudianteMateria.id_estudiante == estudiante.id
                 ).all()
@@ -102,41 +101,39 @@ def _obtener_contexto_bd(db: Session, identificacion: str = None):
                     contexto.append(f"\nMATERIAS MATRICULADAS ({len(materias)} materias):")
                     total_creditos = 0
                     for est_mat, mat in materias:
-                        estado_materia = est_mat.estado if hasattr(est_mat, 'estado') else 'Cursando'
-                        contexto.append(f"  • {mat.nombre}")
-                        contexto.append(f"    - Créditos: {mat.creditos}")
-                        contexto.append(f"    - Calificación: {est_mat.calificacion if est_mat.calificacion else 'Pendiente'}")
-                        contexto.append(f"    - Estado: {estado_materia}")
-                        if hasattr(mat, 'profesor'):
-                            contexto.append(f"    - Profesor: {mat.profesor}")
+                        contexto.append(f"  • {mat.nombre_materia} - {mat.creditos} créditos")
                         total_creditos += mat.creditos
                     contexto.append(f"\nTotal de créditos matriculados: {total_creditos}")
+                    
+                    # MATERIAS PRIORIZADAS POR CRÉDITOS
+                    try:
+                        materias_priorizadas = MateriaLogica.ordenar_matrias(estudiante.id)
+                        if materias_priorizadas:
+                            contexto.append("\n📊 MATERIAS PRIORIZADAS POR CRÉDITOS:")
+                            contexto.append("(Ordenadas de mayor a menor prioridad según créditos)")
+                            posicion = 1
+                            for materia_obj, prioridad in materias_priorizadas.items():
+                                contexto.append(f"  {posicion}. {materia_obj.nombre_materia} - {materia_obj.creditos} créditos (Prioridad: {prioridad})")
+                                posicion += 1
+                    except Exception as e:
+                        logger.warning(f"Error al obtener materias priorizadas: {e}")
+                        
                 contexto.append("")
             
-            # Si no es estudiante, buscar como profesor
+            # Si no es estudiante, buscar como usuario general
             if not estudiante:
-                profesor = db.query(models.Profesor).filter(
-                    models.Profesor.identificacion == identificacion
+                usuario = db.query(models.Usuario).filter(
+                    models.Usuario.id == identificacion
                 ).first()
                 
-                if profesor:
+                if usuario:
                     contexto.append("=" * 50)
-                    contexto.append("INFORMACIÓN DEL PROFESOR")
+                    contexto.append(f"INFORMACIÓN DEL {usuario.rol.upper()}")
                     contexto.append("=" * 50)
-                    contexto.append(f"Nombre completo: {profesor.nombre} {profesor.apellido}")
-                    contexto.append(f"Identificación: {profesor.identificacion}")
-                    contexto.append(f"Correo: {profesor.correo}")
-                    contexto.append(f"Departamento: {profesor.departamento}")
-                    
-                    # Materias que enseña
-                    materias_profesor = db.query(models.Materia).filter(
-                        models.Materia.profesor_id == profesor.id
-                    ).all()
-                    
-                    if materias_profesor:
-                        contexto.append(f"\nMATERIAS QUE ENSEÑA ({len(materias_profesor)}):")
-                        for mat in materias_profesor:
-                            contexto.append(f"  • {mat.nombre} ({mat.creditos} créditos)")
+                    contexto.append(f"Nombre completo: {usuario.nombre} {usuario.apellidos}")
+                    contexto.append(f"Identificación: {usuario.id}")
+                    contexto.append(f"Rol: {usuario.rol}")
+                    contexto.append(f"Tipo de documento: {usuario.tipo_id}")
                     contexto.append("")
         
         # ============ TODAS LAS MATERIAS DISPONIBLES ============
@@ -146,42 +143,19 @@ def _obtener_contexto_bd(db: Session, identificacion: str = None):
             contexto.append(f"MATERIAS DISPONIBLES EN LA UNIVERSIDAD ({len(todas_materias)} primeras):")
             contexto.append("=" * 50)
             for mat in todas_materias:
-                contexto.append(f"  • {mat.nombre} - {mat.creditos} créditos")
+                contexto.append(f"  • {mat.nombre_materia} - {mat.creditos} créditos")
             contexto.append("")
         
-        # ============ NOTICIAS Y EVENTOS ============
-        noticias = db.query(models.Noticia).order_by(models.Noticia.fecha.desc()).limit(5).all()
-        if noticias:
+        # ============ USUARIOS DEL SISTEMA ============
+        usuarios = db.query(models.Usuario).limit(10).all()
+        if usuarios:
             contexto.append("=" * 50)
-            contexto.append("NOTICIAS RECIENTES DE LA UNIVERSIDAD:")
+            contexto.append("USUARIOS DEL SISTEMA:")
             contexto.append("=" * 50)
-            for noticia in noticias:
-                contexto.append(f"📰 {noticia.titulo}")
-                contexto.append(f"   Fecha: {noticia.fecha}")
-                contexto.append(f"   {noticia.contenido[:200]}...")
-                contexto.append("")
-        
-        # ============ GRUPOS ESTUDIANTILES ============
-        grupos = db.query(models.GrupoEstudiantil).limit(10).all()
-        if grupos:
-            contexto.append("=" * 50)
-            contexto.append("GRUPOS ESTUDIANTILES ACTIVOS:")
-            contexto.append("=" * 50)
-            for grupo in grupos:
-                contexto.append(f"👥 {grupo.nombre}")
-                contexto.append(f"   {grupo.descripcion}")
-                contexto.append("")
-        
-        # ============ PROFESORES DISPONIBLES ============
-        profesores = db.query(models.Profesor).limit(10).all()
-        if profesores:
-            contexto.append("=" * 50)
-            contexto.append("PROFESORES DE LA UNIVERSIDAD:")
-            contexto.append("=" * 50)
-            for prof in profesores:
-                contexto.append(f"👨‍🏫 {prof.nombre} {prof.apellido}")
-                contexto.append(f"   Departamento: {prof.departamento}")
-                contexto.append(f"   Correo: {prof.correo}")
+            for user in usuarios:
+                contexto.append(f"� {user.nombre} {user.apellidos}")
+                contexto.append(f"   Rol: {user.rol}")
+                contexto.append(f"   Tipo ID: {user.tipo_id}")
                 contexto.append("")
                 
     except Exception as e:
@@ -203,6 +177,7 @@ def _construir_prompt_con_contexto(prompt_usuario: str, contexto_json: dict = No
         "TU MISIÓN:",
         "- Ayudar a estudiantes y profesores con información precisa y personalizada",
         "- Responder preguntas sobre materias, calificaciones, profesores, eventos",
+        "- Mostrar materias priorizadas por créditos cuando lo soliciten",
         "- Guiar en trámites administrativos y procesos académicos",
         "- Ser amigable, profesional y usar un tono conversacional",
         "",
@@ -211,15 +186,29 @@ def _construir_prompt_con_contexto(prompt_usuario: str, contexto_json: dict = No
         "✓ Información en TIEMPO REAL de estudiantes, profesores, materias, noticias",
         "✓ Puedes llamar al usuario por su NOMBRE si está identificado",
         "✓ Puedes hacer cálculos (promedios, créditos, etc.)",
+        "✓ Puedes ayudar a los usuarios a enviar SUGERENCIAS al buzón",
         "",
         "REGLAS IMPORTANTES:",
         "1. Si el usuario está identificado, dirígete a él por su NOMBRE",
         "2. Si preguntan por materias/notas, usa la información REAL de la BD",
         "3. Si preguntan por profesores, usa los datos REALES",
-        "4. Si no tienes la info exacta, sugiere contactar a la universidad",
-        "5. SIEMPRE responde en español de forma clara y concisa",
-        "6. Si hay múltiples opciones, preséntalas en formato de lista",
-        "7. Incluye emojis relevantes para hacer la conversación más amigable 😊",
+        "4. 📊 MATERIAS PRIORIZADAS: Cuando te pregunten por materias priorizadas o por orden de créditos:",
+        "   - USA EXCLUSIVAMENTE la sección '📊 MATERIAS PRIORIZADAS POR CRÉDITOS'",
+        "   - Muestra el listado COMPLETO tal como aparece en el contexto",
+        "   - Explica que están ordenadas de MAYOR a MENOR número de créditos",
+        "   - Menciona la prioridad (Alta/Media/Baja) de cada materia",
+        "5. 📝 BUZÓN DE SUGERENCIAS: Si el usuario quiere enviar una queja, reclamo, sugerencia o felicitación:",
+        "   - Explica que puede enviarlo al buzón de sugerencias",
+        "   - Los tipos válidos son: Queja, Reclamo, Sugerencia, Felicitación",
+        "   - Pide el ASUNTO (tema breve)",
+        "   - Pide la DESCRIPCIÓN (detallada)",
+        "   - Indica que su mensaje será registrado y revisado por la universidad",
+        "   - NO intentes guardar la sugerencia tú mismo, solo guía al usuario",
+        "   - Cuando el USUARIO te diga el tipo de sugerencias y lo que quiere di gracias",
+        "6. Si no tienes la info exacta, sugiere contactar a la universidad",
+        "7. SIEMPRE responde en español de forma clara y concisa",
+        "8. Si hay múltiples opciones, preséntalas en formato de lista numerada",
+        "9. Incluye emojis relevantes para hacer la conversación más amigable 😊",
         "",
         "⚠️ REGLA CRÍTICA SOBRE ENLACES:",
         "- Cuando una respuesta incluya una URL, DEBES mostrar el enlace COMPLETO",
@@ -407,6 +396,84 @@ async def generate_ai(
         status_code=502,
         detail=f"No se pudo generar contenido con ningún modelo disponible. Último error: {last_error}"
     )
+
+
+@router.post("/sugerencia")
+async def crear_sugerencia(
+    sugerencia: schemas.BuzonSugerenciasBase,
+    db: Session = Depends(get_db)
+):
+    """Crea una nueva sugerencia en el buzón.
+    
+    Tipos de sugerencia válidos:
+    - Queja
+    - Reclamo
+    - Sugerencia
+    - Felicitación
+    
+    Ejemplo de uso:
+    ```json
+    {
+        "id_estudiante": "1234567890",
+        "tipo_documento": "CC",
+        "tipo_sugerencia": "Sugerencia",
+        "asunto": "Mejora en la biblioteca",
+        "descripcion": "Sería genial tener más horarios disponibles los fines de semana."
+    }
+    ```
+    """
+    try:
+        # Validar tipo de sugerencia
+        tipos_validos = ["Queja", "Reclamo", "Sugerencia", "Felicitación"]
+        if sugerencia.tipo_sugerencia not in tipos_validos:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Tipo de sugerencia no válido. Debe ser uno de: {', '.join(tipos_validos)}"
+            )
+        
+        # Validar que el estudiante exista
+        estudiante = db.query(models.Estudiante).filter(
+            models.Estudiante.id == sugerencia.id_estudiante
+        ).first()
+        
+        if not estudiante:
+            # Buscar como usuario general
+            usuario = db.query(models.Usuario).filter(
+                models.Usuario.id == sugerencia.id_estudiante
+            ).first()
+            
+            if not usuario:
+                raise HTTPException(
+                    status_code=404,
+                    detail="Identificación no encontrada en el sistema"
+                )
+        
+        # Crear la sugerencia usando el schema
+        nueva_sugerencia = schemas.BuzonSugerenciasCreate(
+            id_estudiante=sugerencia.id_estudiante,
+            tipo_documento=sugerencia.tipo_documento,
+            tipo_sugerencia=sugerencia.tipo_sugerencia,
+            asunto=sugerencia.asunto,
+            descripcion=sugerencia.descripcion,
+            estado="Pendiente"
+        )
+        
+        # Guardar en la BD
+        sugerencia_guardada = crud.crear_sugerencia(db, nueva_sugerencia)
+        
+        return {
+            "success": True,
+            "message": f"¡Gracias! Tu {sugerencia.tipo_sugerencia.lower()} ha sido registrada con éxito.",
+            "id": sugerencia_guardada.id,
+            "estado": sugerencia_guardada.estado,
+            "created_at": sugerencia_guardada.created_at.isoformat() if hasattr(sugerencia_guardada, 'created_at') else None
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error al crear sugerencia: {e}")
+        raise HTTPException(status_code=500, detail=f"Error al procesar la sugerencia: {str(e)}")
 
 
 @router.get("/models")

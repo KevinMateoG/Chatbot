@@ -13,7 +13,7 @@ function Chatbot() {
       type: "bot",
     },
     {
-      text: "Para brindarte información personalizada, por favor ingresa tu número de identificación (opcional, presiona Enter para omitir):",
+      text: "Para brindarte información personalizada, por favor ingresa tu número de identificación:",
       type: "bot",
     },
   ]);

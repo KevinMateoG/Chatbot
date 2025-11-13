@@ -28,4 +28,5 @@ dist-ssr
 *secretconfig*
 .env
 DOCUMENTACION_IA*
-*test_ai_context.py*
+SUGERENCIAS_IA.md
+*test*
